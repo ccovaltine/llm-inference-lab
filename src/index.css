@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primitive-blue-700: oklch(43% 0.19 267);
+    --primitive-blue-600: oklch(51% 0.18 261);
+    --primitive-ink-900: oklch(30% 0.015 260);
+    --primitive-ink-700: oklch(40% 0.012 260);
+    --primitive-paper-50: oklch(98% 0.003 90);
+    --primitive-paper-100: oklch(96.8% 0.004 90);
+    --primitive-red-600: oklch(57% 0.19 32);
+    --primitive-yellow-500: oklch(79% 0.14 82);
+    --background: 0 0% 97%;
+    --foreground: 0 0% 27%;
+    --card: 60 9% 99%;
+    --card-foreground: 0 0% 24%;
+    --popover: 60 9% 99%;
+    --popover-foreground: 0 0% 24%;
+    --primary: 224 71% 43%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 220 12% 93%;
+    --secondary-foreground: 224 71% 36%;
+    --muted: 220 9% 93%;
+    --muted-foreground: 220 5% 38%;
+    --accent: 224 60% 94%;
+    --accent-foreground: 224 71% 36%;
+    --destructive: 9 72% 48%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 10% 85%;
+    --input: 220 10% 80%;
+    --ring: 224 71% 43%;
+    --radius: 0.5rem;
+    --paper: var(--primitive-paper-50);
+    --paper-subtle: var(--primitive-paper-100);
+    --ink: var(--primitive-ink-700);
+    --ink-strong: var(--primitive-ink-900);
+    --blue: var(--primitive-blue-700);
+    --blue-bright: var(--primitive-blue-600);
+    --red: var(--primitive-red-600);
+    --yellow: var(--primitive-yellow-500);
+    --line: oklch(87% 0.012 260);
+    --line-strong: oklch(76% 0.018 260);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--paper); }
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, select { font: inherit; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.45; }
+  a { color: inherit; text-decoration: none; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid var(--blue-bright);
+    outline-offset: 3px;
+  }
+  ::selection { background: oklch(85% 0.09 260); color: var(--ink-strong); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
