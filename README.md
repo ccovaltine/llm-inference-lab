@@ -121,70 +121,13 @@ npm start
 
 生产服务由 `dist/boot.js` 启动，并托管 `dist/public` 中的前端构建产物。
 
-## GitHub Pages 部署
+## GitHub Pages 静态演示
 
-Pages 构建会执行以下处理：
-
-1. 使用 `/llm-inference-lab/` 作为 Vite `base`，避免项目页资源错误指向域名根目录。
-2. 启用 `VITE_STATIC_DEMO`，关闭无后端环境下的账户请求与保存入口。
-3. 输出到 `dist/public`，可生成 `404.html` 作为 SPA 回退。
-
-首次使用时，在仓库 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。不要选择 `main / (root)`：那会直接发布源码目录的 `index.html`，浏览器无法把 `/src/main.tsx` 当作已编译应用运行。
-
-在仓库新增 `.github/workflows/deploy-pages.yml`，即可在 `main` 更新后自动测试、构建和部署：
-
-```yaml
-name: Deploy GitHub Pages
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm install --no-audit --no-fund
-      - run: npm run check && npm test
-      - run: npm run build:pages
-      - run: |
-          touch dist/public/.nojekyll
-          cp dist/public/index.html dist/public/404.html
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/public
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
-```
-
-本地验证同一份 Pages 构建：
+推送到 `main` 后，`.github/workflows/deploy-pages.yml` 会自动测试、构建并部署 Pages 静态演示：以 `/llm-inference-lab/` 为基路径，并关闭登录与保存入口。本地预览同一份构建：
 
 ```bash
 npm run build:pages
-npm run preview:pages -- --host 0.0.0.0
+npm run preview:pages
 ```
 
 若 fork 后仓库名发生变化，需要同步修改 `package.json` 中 `build:pages` 的 `VITE_BASE_PATH`。
@@ -237,11 +180,7 @@ npm run build
 npm run build:pages
 ```
 
-当前测试覆盖微型模型前向计算、分词／解码约束，以及核心推理算子。Pages 构建还应检查：
-
-- `dist/public/index.html` 中的 JS、CSS 与 favicon 均以 `/llm-inference-lab/` 开头。
-- 页面直接打开时无 `/src/main.tsx` 请求，也无资源 404。
-- 实验台、注意力网络、概念速查和静态实验记录说明均可正常切换。
+当前测试覆盖微型模型前向计算、分词／解码约束，以及核心推理算子。
 
 ## 实现说明
 
