@@ -830,3 +830,20 @@
   padding: 0 9px;
   font-size: 11px;
 }
+
+/* The fourth navigation item must remain on one line on small screens. */
+@media (max-width: 767px) {
+  .main-nav button {
+    white-space: nowrap;
+  }
+}
+@media (max-width: 390px) {
+  .main-nav button {
+    gap: 3px;
+    padding-inline: 2px;
+    font-size: 10px;
+  }
+  .main-nav button svg {
+    width: 13px;
+  }
+}
