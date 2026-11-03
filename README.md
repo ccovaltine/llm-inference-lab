@@ -12,10 +12,10 @@
 
 ## 在线体验与功能边界
 
-| 运行方式 | 推理可视化 | MHA／GQA／MLA 网络 | Kimi 登录 | 服务端实验记录 |
-| --- | --- | --- | --- | --- |
-| GitHub Pages | 支持 | 支持 | 不提供 | 不提供 |
-| 完整应用 | 支持 | 支持 | 支持 | 支持 |
+| 运行方式     | 推理可视化 | MHA／GQA／MLA 网络 | Kimi 登录 | 服务端实验记录 |
+| ------------ | ---------- | ------------------ | --------- | -------------- |
+| GitHub Pages | 支持       | 支持               | 不提供    | 不提供         |
+| 完整应用     | 支持       | 支持               | 支持      | 支持           |
 
 GitHub Pages 只托管静态文件，无法运行本项目的 Hono API、OAuth 回调或 MySQL 数据库。因此 Pages 版本会隐藏登录与保存入口；模型计算仍在本地浏览器中完整执行，不会用 `localStorage` 模拟服务端持久化。
 
@@ -53,17 +53,17 @@ GitHub Pages 只托管静态文件，无法运行本项目的 Hono API、OAuth �
 
 核心实现位于 `src/lib/tinyTransformer.ts`。
 
-| 配置 | 值 |
-| --- | --- |
-| 架构 | Decoder-only Transformer |
-| 层数 | 2 |
-| Attention Heads | 2 |
-| `d_model` | 8 |
-| `d_ff` | 16 |
-| 词表大小 | 29 |
-| 归一化 | Pre-norm RMSNorm |
-| 注意力 | Causal Multi-Head Self-Attention |
-| 权重 | 固定伪随机值，确定性可复现 |
+| 配置            | 值                               |
+| --------------- | -------------------------------- |
+| 架构            | Decoder-only Transformer         |
+| 层数            | 2                                |
+| Attention Heads | 2                                |
+| `d_model`       | 8                                |
+| `d_ff`          | 16                               |
+| 词表大小        | 29                               |
+| 归一化          | Pre-norm RMSNorm                 |
+| 注意力          | Causal Multi-Head Self-Attention |
+| 权重            | 固定伪随机值，确定性可复现       |
 
 **模型边界**：固定权重只用于解释计算过程，未经过真实语言任务训练，因此输出不具备实际语言能力。这里的重点不是生成质量，而是让每一个算子、形状和状态变化都可见、可查、可复算。MHA／GQA／MLA 页面用于讲解结构差异，并不改变上述两层教学模型的真实前向权重。
 
@@ -158,8 +158,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+      - run: npm install --no-audit --no-fund
       - run: npm run check && npm test
       - run: npm run build:pages
       - run: |
@@ -192,18 +191,18 @@ npm run preview:pages -- --host 0.0.0.0
 
 ## 常用命令
 
-| 命令 | 用途 |
-| --- | --- |
-| `npm run dev` | 启动 Vite 与 Hono 开发服务 |
-| `npm run check` | TypeScript 类型检查 |
-| `npm test` | 运行模型与算子测试 |
-| `npm run build` | 构建完整前端与生产服务 |
-| `npm run build:pages` | 构建 GitHub Pages 静态演示 |
-| `npm run preview:pages` | 按仓库子路径预览 Pages 构建 |
-| `npm start` | 启动完整生产服务 |
-| `npm run lint` | ESLint 检查 |
-| `npm run db:push` | 将 Drizzle Schema 推送到数据库 |
-| `npm run db:generate` | 生成数据库迁移 |
+| 命令                    | 用途                           |
+| ----------------------- | ------------------------------ |
+| `npm run dev`           | 启动 Vite 与 Hono 开发服务     |
+| `npm run check`         | TypeScript 类型检查            |
+| `npm test`              | 运行模型与算子测试             |
+| `npm run build`         | 构建完整前端与生产服务         |
+| `npm run build:pages`   | 构建 GitHub Pages 静态演示     |
+| `npm run preview:pages` | 按仓库子路径预览 Pages 构建    |
+| `npm start`             | 启动完整生产服务               |
+| `npm run lint`          | ESLint 检查                    |
+| `npm run db:push`       | 将 Drizzle Schema 推送到数据库 |
+| `npm run db:generate`   | 生成数据库迁移                 |
 
 ## 项目结构
 
