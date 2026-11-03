@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import {
-  ArrowRight, BookOpen, CircleStop, FlaskConical, FolderClock, LoaderCircle,
+  ArrowRight, BookOpen, CircleStop, Database, FlaskConical, FolderClock, LoaderCircle,
   LogIn, Network, Play, Save, Sparkles, Trash2, UserRound,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
@@ -12,6 +12,7 @@ import { IS_STATIC_DEMO } from "@/const";
 import Concepts from "@/components/Concepts";
 import TransformerWorkbench from "@/components/TransformerWorkbench";
 import AttentionNetwork from "@/components/AttentionNetwork";
+import KVCacheReplay from "@/components/KVCacheReplay";
 import { ArchitectureStrip } from "@/components/InferenceVisual";
 import {
   MODEL_CONFIG, forward, getCandidates, tokenize,
@@ -19,7 +20,7 @@ import {
 } from "@/lib/tinyTransformer";
 
 const EXAMPLES = ["小猫坐在垫子上", "机器人站在沙发旁边", "小狗躺在草地上"];
-type View = "lab" | "attention" | "concepts" | "notebook";
+type View = "lab" | "kv" | "attention" | "concepts" | "notebook";
 
 export default function Home() {
   const [view, setView] = useState<View>("lab");
@@ -124,6 +125,7 @@ export default function Home() {
         </button>
         <nav className="main-nav" aria-label="主导航">
           <button type="button" className={view === "lab" ? "is-active" : ""} onClick={() => switchView("lab")}><FlaskConical />实验台</button>
+          <button type="button" className={view === "kv" ? "is-active" : ""} onClick={() => switchView("kv")}><Database />KV Cache</button>
           <button type="button" className={view === "attention" ? "is-active" : ""} onClick={() => switchView("attention")}><Network />注意力网络</button>
           <button type="button" className={view === "concepts" ? "is-active" : ""} onClick={() => switchView("concepts")}><BookOpen />概念速查</button>
           <button type="button" className={view === "notebook" ? "is-active" : ""} onClick={() => switchView("notebook")}><FolderClock />我的实验</button>
@@ -194,6 +196,8 @@ export default function Home() {
           <footer className="site-footer"><span>INFERENCE LAB</span><p>教学模型的输出不代表真实语言能力；它的价值是让每个算子、形状和状态变化都可见。</p><button type="button" onClick={() => switchView("concepts")}>继续理解 KV Cache<ArrowRight /></button></footer>
         </main>
       )}
+
+      {view === "kv" && <KVCacheReplay />}
 
       {view === "attention" && <AttentionNetwork />}
 
