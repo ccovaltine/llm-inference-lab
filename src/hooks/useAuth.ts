@@ -1,7 +1,7 @@
 import { trpc } from "@/providers/trpc";
 import { useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { LOGIN_PATH } from "@/const";
+import { IS_STATIC_DEMO, LOGIN_PATH } from "@/const";
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -22,6 +22,7 @@ export function useAuth(options?: UseAuthOptions) {
     error,
     refetch,
   } = trpc.auth.me.useQuery(undefined, {
+    enabled: !IS_STATIC_DEMO,
     staleTime: 1000 * 60 * 5,
     retry: false,
   });
@@ -53,6 +54,6 @@ export function useAuth(options?: UseAuthOptions) {
       logout,
       refresh: refetch,
     }),
-    [user, isLoading, logoutMutation.isPending, error, logout, refetch],
+    [user, isLoading, logoutMutation.isPending, error, logout, refetch]
   );
 }

@@ -8,6 +8,7 @@ import { Toaster, toast } from "sonner";
 import "../App.css";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
+import { IS_STATIC_DEMO } from "@/const";
 import Concepts from "@/components/Concepts";
 import TransformerWorkbench from "@/components/TransformerWorkbench";
 import AttentionNetwork from "@/components/AttentionNetwork";
@@ -32,7 +33,7 @@ export default function Home() {
   const labRef = useRef<HTMLElement>(null);
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const utils = trpc.useUtils();
-  const experiments = trpc.experiment.list.useQuery(undefined, { enabled: isAuthenticated });
+  const experiments = trpc.experiment.list.useQuery(undefined, { enabled: isAuthenticated && !IS_STATIC_DEMO });
   const createExperiment = trpc.experiment.create.useMutation({
     onSuccess: async () => {
       await utils.experiment.list.invalidate();
@@ -128,7 +129,7 @@ export default function Home() {
           <button type="button" className={view === "notebook" ? "is-active" : ""} onClick={() => switchView("notebook")}><FolderClock />我的实验</button>
         </nav>
         <div className="account-area">
-          {authLoading ? <span className="account-loading"><LoaderCircle className="spin" />账户检查中</span> : user ? (
+          {IS_STATIC_DEMO ? <span className="account-loading"><FlaskConical />静态演示</span> : authLoading ? <span className="account-loading"><LoaderCircle className="spin" />账户检查中</span> : user ? (
             <button type="button" className="account-button" onClick={logout} title="点击退出登录"><UserRound /><span>{user.name ?? "已登录"}</span><small>退出</small></button>
           ) : (
             <Link to="/login" className="account-button"><LogIn /><span>登录保存</span></Link>
@@ -167,7 +168,7 @@ export default function Home() {
               <div className="decode-controls">
                 <label><span>Temperature <strong>{temperature.toFixed(1)}</strong></span><input type="range" min="0.1" max="2" step="0.1" value={temperature} onChange={(event) => setTemperature(Number(event.target.value))} /></label>
                 <label><span>Top-k <strong>{topK}</strong></span><input type="range" min="1" max="16" step="1" value={topK} onChange={(event) => setTopK(Number(event.target.value))} /></label>
-                <button type="button" className="button secondary save-button" onClick={isAuthenticated ? saveCurrent : () => switchView("notebook")} disabled={createExperiment.isPending}>{createExperiment.isPending ? <LoaderCircle className="spin" /> : <Save />}{isAuthenticated ? "保存实验" : "登录后保存"}</button>
+                {!IS_STATIC_DEMO && <button type="button" className="button secondary save-button" onClick={isAuthenticated ? saveCurrent : () => switchView("notebook")} disabled={createExperiment.isPending}>{createExperiment.isPending ? <LoaderCircle className="spin" /> : <Save />}{isAuthenticated ? "保存实验" : "登录后保存"}</button>}
               </div>
             </div>
 
@@ -200,8 +201,10 @@ export default function Home() {
 
       {view === "notebook" && (
         <main className="subpage notebook-page">
-          <header className="view-intro"><span className="stage-kicker">YOUR NOTEBOOK</span><h1>把一次观察，留成可重开的实验</h1><p>保存输入、生成结果与解码参数。记录保存在服务端，刷新或更换设备后仍可访问。</p></header>
-          {!isAuthenticated ? (
+          <header className="view-intro"><span className="stage-kicker">YOUR NOTEBOOK</span><h1>把一次观察，留成可重开的实验</h1><p>{IS_STATIC_DEMO ? "GitHub Pages 仅提供浏览器内的推理演示，不连接账户、数据库或服务端实验记录。" : "保存输入、生成结果与解码参数。记录保存在服务端，刷新或更换设备后仍可访问。"}</p></header>
+          {IS_STATIC_DEMO ? (
+            <div className="notebook-empty"><FolderClock /><h2>静态演示不保存实验记录</h2><p>所有模型计算仍可在本地浏览器中完整体验；登录与保存功能需要运行项目自带的 Hono 服务和 MySQL 数据库。</p><button type="button" className="button primary" onClick={() => switchView("lab")}>返回推理实验<ArrowRight /></button></div>
+          ) : !isAuthenticated ? (
             <div className="notebook-empty"><FolderClock /><h2>{authLoading ? "正在检查登录状态" : "登录后查看你的实验记录"}</h2><p>推理实验室无需登录即可使用；只有个人保存功能需要账户。</p>{!authLoading && <Link className="button primary" to="/login"><LogIn />使用 Kimi 登录</Link>}</div>
           ) : (
             <section className="notebook-content">
