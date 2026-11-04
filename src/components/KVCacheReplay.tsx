@@ -322,7 +322,19 @@ export default function KVCacheReplay() {
           <div className="baseline"><b>读图顺序</b><br />① 当前 Q／K／V → ② 两条路径<br />③ 注意力算子与数值展开</div>
         </section>
 
-        <aside className={`replay-dock ${dockOpen ? "" : "is-collapsed"}`} id="replayDock" aria-label="悬浮上下文与步骤控制">
+        <aside className={`replay-dock ${dockOpen ? "" : "is-collapsed"}`} id="replayDock" aria-label="悬浮区域导航、上下文与步骤控制">
+          <nav className="section-dock" id="sectionDock" aria-label="页面区域导航">
+            <strong>滚动到</strong>
+            {[
+              ["shared-computation", "①", "注意力模块"],
+              ["execution-comparison", "②", "双轨对照"],
+              ["numeric-expansion", "③", "数值展开"],
+            ].map(([id, number, label]) => (
+              <a href={`#${id}`} className={activeSection === id ? "is-active" : ""} onClick={(event) => { event.preventDefault(); scrollToSection(id); }} key={id}>
+                <b>{number}</b><span>{label}</span>
+              </a>
+            ))}
+          </nav>
           <button className="dock-toggle" id="dockToggle" type="button" aria-expanded={dockOpen} aria-controls="dockBody" onClick={() => setDockOpen((open) => !open)}>
             <span><b>上下文与步骤</b><small id="dockStatus">{prefill ? "PREFILL" : `DECODE ${step}`} · {t} tokens</small></span>
             <i aria-hidden="true">{dockOpen ? "−" : "+"}</i>
@@ -362,19 +374,6 @@ export default function KVCacheReplay() {
             </div>
           </div>
         </aside>
-
-        <nav className="section-dock" id="sectionDock" aria-label="页面区域导航">
-          <strong>滚动到</strong>
-          {[
-            ["shared-computation", "①", "注意力模块"],
-            ["execution-comparison", "②", "双轨对照"],
-            ["numeric-expansion", "③", "数值展开"],
-          ].map(([id, number, label]) => (
-            <a href={`#${id}`} className={activeSection === id ? "is-active" : ""} onClick={(event) => { event.preventDefault(); scrollToSection(id); }} key={id}>
-              <b>{number}</b><span>{label}</span>
-            </a>
-          ))}
-        </nav>
 
         <section className="replay-console" aria-label="KV Cache 共享网络与双轨对照">
           <section className="section-block" id="shared-computation">

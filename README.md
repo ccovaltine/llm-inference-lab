@@ -12,10 +12,10 @@
 
 ## 在线体验与功能边界
 
-| 运行方式     | 推理可视化 | MHA／GQA／MLA 网络 | Kimi 登录 | 服务端实验记录 |
-| ------------ | ---------- | ------------------ | --------- | -------------- |
-| GitHub Pages | 支持       | 支持               | 不提供    | 不提供         |
-| 完整应用     | 支持       | 支持               | 支持      | 支持           |
+| 运行方式     | 推理可视化 | KV Cache 回放 | MHA／GQA／MLA 网络 | Kimi 登录 | 服务端实验记录 |
+| ------------ | ---------- | ------------- | ------------------ | --------- | -------------- |
+| GitHub Pages | 支持       | 支持          | 支持               | 不提供    | 不提供         |
+| 完整应用     | 支持       | 支持          | 支持               | 支持      | 支持           |
 
 GitHub Pages 只托管静态文件，无法运行本项目的 Hono API、OAuth 回调或 MySQL 数据库。因此 Pages 版本会隐藏登录与保存入口；模型计算仍在本地浏览器中完整执行，不会用 `localStorage` 模拟服务端持久化。
 
@@ -32,7 +32,18 @@ GitHub Pages 只托管静态文件，无法运行本项目的 Hono API、OAuth �
 - 调整 Temperature 与 Top-k，观察候选 token、Logits 和概率分布的变化。
 - 选择一个候选 token 回填上下文，继续下一轮自回归推理，直至 EOS 或长度上限。
 
-### 2. 可重构注意力网络
+### 2. KV Cache 生成回放
+
+在顶部「KV Cache」页面中，用一个共享注意力网络和两条执行路径解释缓存的作用：
+
+- 从完整 **Prefill** 开始，逐轮推进 4 个 **Decode** 阶段，展示上下文、当前 token 与缓存状态如何变化。
+- Prefill 完整展示所有提示 token 的 Q／K／V；Decode 展示当前一行 Q，以及本次注意力实际读取的全部历史与当前 K／V。
+- 并列比较无缓存与有缓存路径：前者重算全部 K／V，后者只新算当前 K／V 并复用历史缓存；两轨的注意力数值保持一致。
+- 点击 QKᵀ、Mask、Softmax 或 AV，可切换真实数值矩阵，并展开单个元素的点积、因果遮蔽、归一化或加权求和过程。
+- 右侧合并式悬浮块包含①②③区域导航、上下文与步骤控制；折叠步骤后仍可跳转区域，推进 Decode 时保持当前阅读位置。
+- 提供 KV Cache 显存滑块与计算公式，说明缓存随上下文和 Batch size 线性增长，以及为什么不缓存历史 Q 或完整注意力矩阵。
+
+### 3. 可重构注意力网络
 
 在顶部「注意力网络」页面中，可以动态调整结构并观察计算图变化：
 
@@ -43,7 +54,7 @@ GitHub Pages 只托管静态文件，无法运行本项目的 Hono API、OAuth �
 - 点击节点后，关联节点与从源到目标的完整路径按原语义颜色高亮。
 - 支持维度标注、淡化其他 Head、手动缩放、自动适应与移动端布局。
 
-### 3. 概念速查与个人实验
+### 4. 概念速查与个人实验
 
 - 用交互示意理解 Prefill、Decode、KV Cache 和自回归循环。
 - 完整应用支持 Kimi 登录，并将输入、输出、Temperature 与 Top-k 保存到服务端。
@@ -65,7 +76,7 @@ GitHub Pages 只托管静态文件，无法运行本项目的 Hono API、OAuth �
 | 注意力          | Causal Multi-Head Self-Attention |
 | 权重            | 固定伪随机值，确定性可复现       |
 
-**模型边界**：固定权重只用于解释计算过程，未经过真实语言任务训练，因此输出不具备实际语言能力。这里的重点不是生成质量，而是让每一个算子、形状和状态变化都可见、可查、可复算。MHA／GQA／MLA 页面用于讲解结构差异，并不改变上述两层教学模型的真实前向权重。
+**模型边界**：固定权重只用于解释计算过程，未经过真实语言任务训练，因此输出不具备实际语言能力。这里的重点不是生成质量，而是让每一个算子、形状和状态变化都可见、可查、可复算。MHA／GQA／MLA 页面用于讲解结构差异，并不改变上述两层教学模型的真实前向权重。KV Cache 回放页使用另一组确定性教学 Q／K／V 数值，专门解释 Prefill、Decode 与缓存生命周期，不声称取自上述固定权重。
 
 ## 本地运行完整应用
 
@@ -121,13 +132,70 @@ npm start
 
 生产服务由 `dist/boot.js` 启动，并托管 `dist/public` 中的前端构建产物。
 
-## GitHub Pages 静态演示
+## GitHub Pages 部署
 
-推送到 `main` 后，`.github/workflows/deploy-pages.yml` 会自动测试、构建并部署 Pages 静态演示：以 `/llm-inference-lab/` 为基路径，并关闭登录与保存入口。本地预览同一份构建：
+Pages 构建会执行以下处理：
+
+1. 使用 `/llm-inference-lab/` 作为 Vite `base`，避免项目页资源错误指向域名根目录。
+2. 启用 `VITE_STATIC_DEMO`，关闭无后端环境下的账户请求与保存入口。
+3. 输出到 `dist/public`，可生成 `404.html` 作为 SPA 回退。
+
+首次使用时，在仓库 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。不要选择 `main / (root)`：那会直接发布源码目录的 `index.html`，浏览器无法把 `/src/main.tsx` 当作已编译应用运行。
+
+在仓库新增 `.github/workflows/deploy-pages.yml`，即可在 `main` 更新后自动测试、构建和部署：
+
+```yaml
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run check && npm test
+      - run: npm run build:pages
+      - run: |
+          touch dist/public/.nojekyll
+          cp dist/public/index.html dist/public/404.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+本地验证同一份 Pages 构建：
 
 ```bash
 npm run build:pages
-npm run preview:pages
+npm run preview:pages -- --host 0.0.0.0
 ```
 
 若 fork 后仓库名发生变化，需要同步修改 `package.json` 中 `build:pages` 的 `VITE_BASE_PATH`。
@@ -158,6 +226,8 @@ npm run preview:pages
 ├── src/
 │   ├── components/
 │   │   ├── AttentionNetwork.tsx       # MHA／GQA／MLA 交互页面
+│   │   ├── KVCacheReplay.tsx          # Prefill／Decode 与缓存双轨回放
+│   │   ├── KVCacheReplay.css          # 回放页布局与合并式悬浮控制
 │   │   ├── TransformerWorkbench.tsx   # 三列推理工作台
 │   │   ├── InferenceVisual.tsx        # 矩阵、概率与结构可视化
 │   │   └── Concepts.tsx               # Prefill／Decode／KV Cache
@@ -180,7 +250,12 @@ npm run build
 npm run build:pages
 ```
 
-当前测试覆盖微型模型前向计算、分词／解码约束，以及核心推理算子。
+当前测试覆盖微型模型前向计算、分词／解码约束，以及核心推理算子。Pages 构建还应检查：
+
+- `dist/public/index.html` 中的 JS、CSS 与 favicon 均以 `/llm-inference-lab/` 开头。
+- 页面直接打开时无 `/src/main.tsx` 请求，也无资源 404。
+- 实验台、KV Cache 回放、注意力网络、概念速查和静态实验记录说明均可正常切换。
+- KV Cache 页的合并式悬浮块在桌面与移动端均不越界，区域导航、步骤折叠和 Decode 滚动补偿可用。
 
 ## 实现说明
 
