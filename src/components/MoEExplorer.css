@@ -1,0 +1,2941 @@
+/* MoE 页面独立作用域样式 */
+
+.moe-explorer-page {
+  --p-paper: oklch(98% 0.003 90);
+  --p-subtle: oklch(96.8% 0.004 90);
+  --p-ink: oklch(38% 0.012 260);
+  --p-strong: oklch(27% 0.015 260);
+  --p-blue: oklch(43% 0.19 267);
+  --p-blue2: oklch(51% 0.18 261);
+  --p-gold: oklch(79% 0.14 82);
+  --p-teal: oklch(48% 0.09 195);
+  --p-purple: oklch(52% 0.16 305);
+  --p-red: oklch(52% 0.19 28);
+  --p-line: oklch(87% 0.012 260);
+  --p-line2: oklch(76% 0.018 260);
+  --bg: var(--p-paper);
+  --surface: var(--p-paper);
+  --muted-surface: var(--p-subtle);
+  --text: var(--p-ink);
+  --heading: var(--p-strong);
+  --accent: var(--p-blue);
+  --line: var(--p-line);
+  --line-strong: var(--p-line2);
+}
+.moe-explorer-page * {
+  box-sizing: border-box;
+}
+.moe-explorer-page {
+  scroll-behavior: smooth;
+}
+.moe-explorer-page {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    16px/1.65 "IBM Plex Sans",
+    "PingFang SC",
+    "Microsoft YaHei",
+    system-ui,
+    sans-serif;
+}
+.moe-explorer-page button,
+.moe-explorer-page input,
+.moe-explorer-page select {
+  font: inherit;
+}
+.moe-explorer-page button,
+.moe-explorer-page a,
+.moe-explorer-page input,
+.moe-explorer-page select {
+  -webkit-tap-highlight-color: transparent;
+}
+.moe-explorer-page button {
+  cursor: pointer;
+}
+.moe-explorer-page button:focus-visible,
+.moe-explorer-page a:focus-visible,
+.moe-explorer-page input:focus-visible,
+.moe-explorer-page select:focus-visible,
+.moe-explorer-page [tabindex]:focus-visible {
+  outline: 3px solid var(--p-gold);
+  outline-offset: 3px;
+}
+.moe-explorer-page button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+.moe-explorer-page a {
+  color: inherit;
+  text-decoration: none;
+}
+.moe-explorer-page code,
+.moe-explorer-page .mono {
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+.moe-explorer-page .topbar {
+  min-height: 68px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.moe-explorer-page .brand-mark {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  width: 28px;
+  height: 30px;
+  padding: 4px;
+  background: var(--accent);
+}
+.moe-explorer-page .brand-mark i {
+  display: block;
+  width: 4px;
+  background: var(--bg);
+}
+.moe-explorer-page .brand-mark i:nth-child(1) {
+  height: 10px;
+}
+.moe-explorer-page .brand-mark i:nth-child(2) {
+  height: 20px;
+}
+.moe-explorer-page .brand-mark i:nth-child(3) {
+  height: 15px;
+}
+.moe-explorer-page .brand strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+.moe-explorer-page .brand small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+.moe-explorer-page .nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.moe-explorer-page .nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 13px;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+}
+.moe-explorer-page .nav a:hover {
+  color: var(--accent);
+}
+.moe-explorer-page .nav a.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+.moe-explorer-page .page {
+  max-width: 1680px;
+  margin: auto;
+  padding: 28px 28px 64px;
+}
+.moe-explorer-page .intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px;
+  margin-bottom: 22px;
+}
+.moe-explorer-page .intro > div {
+  max-width: 960px;
+}
+.moe-explorer-page .eyebrow,
+.moe-explorer-page .kicker {
+  color: var(--accent);
+  font:
+    600 10px "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.12em;
+}
+.moe-explorer-page .intro h1 {
+  margin: 7px 0;
+  color: var(--heading);
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+.moe-explorer-page .intro p {
+  margin: 0;
+  max-width: 850px;
+}
+.moe-explorer-page .baseline {
+  flex: 0 0 auto;
+  padding-left: 16px;
+  border-left: 3px solid var(--p-gold);
+  font:
+    12px/1.9 "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .baseline b {
+  color: var(--accent);
+}
+.moe-explorer-page .controls {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.moe-explorer-page .segmented {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 3px;
+  border: 1px solid var(--line);
+  background: var(--muted-surface);
+}
+.moe-explorer-page .segmented button {
+  min-width: 64px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-weight: 650;
+}
+.moe-explorer-page .segmented button:hover {
+  color: var(--accent);
+}
+.moe-explorer-page .segmented button.active {
+  background: var(--accent);
+  color: var(--bg);
+}
+.moe-explorer-page .field {
+  display: grid;
+  gap: 4px;
+}
+.moe-explorer-page .field > span {
+  font-size: 11px;
+}
+.moe-explorer-page .field select {
+  min-width: 132px;
+  height: 44px;
+  padding: 0 30px 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--heading);
+}
+.moe-explorer-page .range-field {
+  min-width: 210px;
+}
+.moe-explorer-page .range-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+}
+.moe-explorer-page .range-line input {
+  width: 140px;
+  accent-color: var(--accent);
+}
+.moe-explorer-page .range-line output {
+  min-width: 34px;
+  color: var(--accent);
+  font:
+    12px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 650;
+}
+.moe-explorer-page .button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--muted-surface);
+}
+.moe-explorer-page .button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.moe-explorer-page .button.primary:hover:not(:disabled) {
+  background: var(--p-blue2);
+  color: var(--bg);
+}
+.moe-explorer-page .console {
+  border: 1px solid var(--line-strong);
+  margin-bottom: 18px;
+}
+.moe-explorer-page .transport {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+}
+.moe-explorer-page .phase {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.moe-explorer-page .phase > span {
+  padding: 5px 9px;
+  background: var(--accent);
+  color: var(--bg);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .phase strong {
+  color: var(--heading);
+  font-size: 14px;
+}
+.moe-explorer-page .transport-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.moe-explorer-page .timeline {
+  display: grid;
+  grid-template-columns: auto minmax(100px, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--line);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .timeline input {
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.moe-explorer-page .workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+.moe-explorer-page .panel {
+  min-width: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+}
+.moe-explorer-page .panel-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .panel-title strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14px;
+}
+.moe-explorer-page .panel-title span {
+  display: block;
+  font-size: 11px;
+}
+.moe-explorer-page .panel-title code {
+  color: var(--accent);
+  font-size: 11px;
+}
+.moe-explorer-page .network-scroll {
+  overflow: auto;
+  background-color: oklch(97.5% 0.006 260);
+  background-image:
+    linear-gradient(oklch(87% 0.012 260/0.25) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(87% 0.012 260/0.25) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.moe-explorer-page #network {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 540px;
+}
+.moe-explorer-page #network .edge {
+  fill: none;
+  stroke: var(--p-line2);
+  stroke-width: 2;
+}
+.moe-explorer-page #network .edge.expert-route {
+  stroke-dasharray: 5 5;
+}
+.moe-explorer-page #network .edge.selected-route {
+  stroke: var(--p-purple);
+  stroke-width: 3;
+  stroke-dasharray: none;
+}
+.moe-explorer-page #network .edge.current-route {
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-dasharray: none;
+}
+.moe-explorer-page #network .node {
+  cursor: pointer;
+}
+.moe-explorer-page #network .node rect {
+  fill: var(--surface);
+  stroke: var(--p-line2);
+  stroke-width: 1.5;
+}
+.moe-explorer-page #network .node text {
+  fill: var(--heading);
+  font:
+    600 13px "IBM Plex Sans",
+    "PingFang SC",
+    sans-serif;
+  pointer-events: none;
+}
+.moe-explorer-page #network .node .sub {
+  fill: var(--text);
+  font:
+    10px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page #network .node.expert rect {
+  fill: oklch(96% 0.015 305);
+  stroke: var(--p-purple);
+  stroke-dasharray: 5 4;
+}
+.moe-explorer-page #network .node.expert.active rect {
+  fill: oklch(92% 0.045 305);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+.moe-explorer-page #network .node.current rect {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.moe-explorer-page #network .node.expert.current rect {
+  fill: var(--accent);
+  stroke: var(--accent);
+  stroke-dasharray: none;
+}
+.moe-explorer-page #network .node.current text,
+.moe-explorer-page #network .node.current .sub {
+  fill: var(--bg);
+}
+.moe-explorer-page #network .node.done rect {
+  fill: oklch(94% 0.025 260);
+  stroke: var(--accent);
+}
+.moe-explorer-page #network .node:focus-visible {
+  outline: none;
+}
+.moe-explorer-page #network .node:focus-visible rect {
+  stroke: var(--p-gold);
+  stroke-width: 5;
+}
+.moe-explorer-page .legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+.moe-explorer-page .legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.moe-explorer-page .legend i {
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--accent);
+}
+.moe-explorer-page .legend i.current {
+  background: var(--accent);
+}
+.moe-explorer-page .legend i.expert {
+  border-color: var(--p-purple);
+  background: oklch(92% 0.045 305);
+}
+.moe-explorer-page .legend i.off {
+  border-style: dashed;
+}
+.moe-explorer-page .inspector {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+}
+.moe-explorer-page .inspect {
+  padding: 20px;
+}
+.moe-explorer-page .inspect h2 {
+  margin: 8px 0 4px;
+  color: var(--heading);
+  font-size: 23px;
+  line-height: 1.25;
+}
+.moe-explorer-page .inspect > p {
+  margin: 10px 0;
+  font-size: 14px;
+}
+.moe-explorer-page .short {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 7px;
+  background: var(--accent);
+  color: var(--bg);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .formula {
+  margin: 14px 0;
+  padding: 12px;
+  background: var(--muted-surface);
+  color: var(--heading);
+  font:
+    12px/1.8 "SFMono-Regular",
+    Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .fact {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.moe-explorer-page .fact code {
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .expert-tabs {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.moe-explorer-page .expert-tabs button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+}
+.moe-explorer-page .expert-tabs button.active {
+  background: var(--p-purple);
+  color: var(--bg);
+  border-color: var(--p-purple);
+}
+.moe-explorer-page .notice {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--p-purple);
+  font-size: 12px;
+}
+.moe-explorer-page .section {
+  margin-top: 28px;
+}
+.moe-explorer-page .section-head {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
+  gap: 32px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+.moe-explorer-page .section-head h2 {
+  margin: 4px 0;
+  color: var(--heading);
+  font-size: 27px;
+  line-height: 1.25;
+}
+.moe-explorer-page .section-head p {
+  margin: 0;
+  max-width: 75ch;
+}
+.moe-explorer-page .metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--line-strong);
+}
+.moe-explorer-page .metric {
+  padding: 20px;
+  border-right: 1px solid var(--line);
+}
+.moe-explorer-page .metric:last-child {
+  border-right: 0;
+}
+.moe-explorer-page .metric span {
+  display: block;
+  font-size: 12px;
+}
+.moe-explorer-page .metric strong {
+  display: block;
+  margin: 6px 0;
+  color: var(--accent);
+  font:
+    700 clamp(25px, 3vw, 38px) "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .metric code {
+  font-size: 11px;
+}
+.moe-explorer-page .notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.moe-explorer-page .note {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 14px;
+}
+.moe-explorer-page .note h3 {
+  margin: 0 0 7px;
+  color: var(--heading);
+  font-size: 17px;
+}
+.moe-explorer-page .note p {
+  margin: 0;
+  font-size: 14px;
+}
+.moe-explorer-page .table-wrap {
+  max-width: 100%;
+  overflow: auto;
+  margin: 12px 0;
+}
+.moe-explorer-page table {
+  border-collapse: collapse;
+  width: 100%;
+  font:
+    11px/1.6 "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page th,
+.moe-explorer-page td {
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+.moe-explorer-page th {
+  background: var(--muted-surface);
+  color: var(--heading);
+}
+.moe-explorer-page td.selected {
+  background: oklch(92% 0.045 305);
+  color: var(--heading);
+  font-weight: 700;
+}
+.moe-explorer-page .matrix-caption {
+  margin: 12px 0 4px;
+  color: var(--accent);
+  font:
+    10px "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.06em;
+}
+.moe-explorer-page .footer {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+.moe-explorer-page .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 980px) {
+  .moe-explorer-page .workspace {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .inspector {
+    position: static;
+    max-height: none;
+  }
+  .moe-explorer-page .baseline {
+    display: none;
+  }
+  .moe-explorer-page .metric-grid,
+  .moe-explorer-page .notes {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .metric {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .moe-explorer-page .metric:last-child {
+    border-bottom: 0;
+  }
+  .moe-explorer-page .section-head {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+@media (max-width: 640px) {
+  .moe-explorer-page .topbar {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .moe-explorer-page .nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .moe-explorer-page .nav a {
+    padding: 0 10px;
+    flex: 0 0 auto;
+  }
+  .moe-explorer-page .page {
+    padding: 22px 14px 44px;
+  }
+  .moe-explorer-page .intro {
+    margin-bottom: 16px;
+  }
+  .moe-explorer-page .intro h1 {
+    font-size: 31px;
+  }
+  .moe-explorer-page .intro p {
+    font-size: 14px;
+  }
+  .moe-explorer-page .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .moe-explorer-page .segmented {
+    grid-column: 1/-1;
+  }
+  .moe-explorer-page .segmented button {
+    flex: 1;
+    min-width: 54px;
+  }
+  .moe-explorer-page .field select {
+    min-width: 0;
+    width: 100%;
+  }
+  .moe-explorer-page .range-field {
+    min-width: 0;
+  }
+  .moe-explorer-page .range-line input {
+    width: 100%;
+    min-width: 0;
+  }
+  .moe-explorer-page .controls > .button {
+    width: 100%;
+  }
+  .moe-explorer-page .transport {
+    padding: 10px;
+  }
+  .moe-explorer-page .phase {
+    align-items: flex-start;
+  }
+  .moe-explorer-page .timeline {
+    grid-template-columns: 1fr auto;
+  }
+  .moe-explorer-page .timeline label {
+    display: none;
+  }
+  .moe-explorer-page .panel-title {
+    align-items: flex-start;
+  }
+  .moe-explorer-page .panel-title code {
+    display: none;
+  }
+  .moe-explorer-page #network {
+    min-width: 540px;
+  }
+  .moe-explorer-page .inspect {
+    padding: 16px;
+  }
+  .moe-explorer-page .section-head h2 {
+    font-size: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moe-explorer-page {
+    scroll-behavior: auto;
+  }
+  .moe-explorer-page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Integrated learning path */
+.moe-explorer-page .chapter-anchor {
+  scroll-margin-top: 18px;
+}
+.moe-explorer-page .chapter {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 2px solid var(--line-strong);
+}
+.moe-explorer-page .chapter-head {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.42fr) minmax(0, 1.58fr);
+  gap: 32px;
+  margin-bottom: 24px;
+}
+.moe-explorer-page .chapter-number {
+  color: var(--accent);
+  font:
+    600 11px "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.1em;
+}
+.moe-explorer-page .chapter-head h2 {
+  margin: 0 0 8px;
+  color: var(--heading);
+  font-size: 30px;
+  line-height: 1.25;
+}
+.moe-explorer-page .chapter-head p {
+  margin: 0;
+  max-width: 85ch;
+}
+.moe-explorer-page .workspace {
+  grid-template-columns: minmax(0, 1.24fr) minmax(400px, 0.75fr);
+}
+.moe-explorer-page #network .expert-frame {
+  fill: oklch(98% 0.003 90/0.55);
+  stroke: var(--p-line);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+.moe-explorer-page #network .expert-frame.active-frame {
+  fill: oklch(96% 0.015 305/0.5);
+  stroke: var(--p-purple);
+}
+.moe-explorer-page #network .expert-op {
+  cursor: pointer;
+}
+.moe-explorer-page #network .expert-op rect {
+  fill: var(--surface);
+  stroke: var(--p-line2);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.moe-explorer-page #network .expert-op text {
+  fill: var(--heading);
+  font:
+    600 11px "IBM Plex Sans",
+    "PingFang SC",
+    sans-serif;
+  pointer-events: none;
+}
+.moe-explorer-page #network .expert-op .sub {
+  fill: var(--text);
+  font:
+    9px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page #network .expert-op .value {
+  fill: var(--p-purple);
+  font:
+    8.5px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page #network .expert-op.active rect {
+  fill: oklch(96% 0.015 305);
+  stroke: var(--p-purple);
+  stroke-dasharray: none;
+}
+.moe-explorer-page #network .expert-op.current-op rect {
+  fill: oklch(92% 0.04 260);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+.moe-explorer-page #network .expert-op:focus-visible {
+  outline: none;
+}
+.moe-explorer-page #network .expert-op:focus-visible rect {
+  stroke: var(--p-gold);
+  stroke-width: 4;
+}
+.moe-explorer-page #network .residual-route {
+  stroke: var(--p-gold);
+  stroke-width: 2.5;
+}
+.moe-explorer-page #network .residual-label {
+  fill: oklch(55% 0.12 82);
+  font:
+    10px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .cost-presets {
+  margin-bottom: 12px;
+}
+@media (max-width: 1180px) {
+  .moe-explorer-page .workspace {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .inspector {
+    position: static;
+    max-height: none;
+  }
+}
+@media (max-width: 640px) {
+  .moe-explorer-page .chapter {
+    margin-top: 44px;
+    padding-top: 24px;
+  }
+  .moe-explorer-page .chapter-head {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .moe-explorer-page .chapter-head h2 {
+    font-size: 25px;
+  }
+  .moe-explorer-page #network {
+    min-width: 900px;
+  }
+  .moe-explorer-page .network-scroll:after {
+    content: "横向滚动查看四个完整专家支路";
+    display: block;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 11px;
+  }
+}
+
+.moe-explorer-page {
+  --p-paper: oklch(98% 0.003 90);
+  --p-subtle: oklch(96.8% 0.004 90);
+  --p-ink: oklch(38% 0.012 260);
+  --p-strong: oklch(27% 0.015 260);
+  --p-blue: oklch(43% 0.19 267);
+  --p-blue2: oklch(51% 0.18 261);
+  --p-gold: oklch(79% 0.14 82);
+  --p-teal: oklch(48% 0.09 195);
+  --p-purple: oklch(52% 0.16 305);
+  --p-red: oklch(52% 0.19 28);
+  --p-line: oklch(87% 0.012 260);
+  --p-line2: oklch(76% 0.018 260);
+  --bg: var(--p-paper);
+  --text: var(--p-ink);
+  --heading: var(--p-strong);
+  --accent: var(--p-blue);
+  --line: var(--p-line);
+  --line-strong: var(--p-line2);
+}
+.moe-explorer-page * {
+  box-sizing: border-box;
+}
+.moe-explorer-page {
+  scroll-behavior: smooth;
+}
+.moe-explorer-page {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    16px/1.65 "IBM Plex Sans",
+    "PingFang SC",
+    "Microsoft YaHei",
+    system-ui,
+    sans-serif;
+}
+.moe-explorer-page button,
+.moe-explorer-page input,
+.moe-explorer-page select {
+  font: inherit;
+}
+.moe-explorer-page button {
+  cursor: pointer;
+}
+.moe-explorer-page button:focus-visible,
+.moe-explorer-page a:focus-visible,
+.moe-explorer-page input:focus-visible,
+.moe-explorer-page select:focus-visible {
+  outline: 3px solid var(--p-gold);
+  outline-offset: 3px;
+}
+.moe-explorer-page button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+.moe-explorer-page a {
+  color: inherit;
+  text-decoration: none;
+}
+.moe-explorer-page code,
+.moe-explorer-page .mono {
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+.moe-explorer-page .topbar {
+  min-height: 68px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.moe-explorer-page .brand-mark {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  width: 28px;
+  height: 30px;
+  padding: 4px;
+  background: var(--accent);
+}
+.moe-explorer-page .brand-mark i {
+  display: block;
+  width: 4px;
+  background: var(--bg);
+}
+.moe-explorer-page .brand-mark i:nth-child(1) {
+  height: 10px;
+}
+.moe-explorer-page .brand-mark i:nth-child(2) {
+  height: 20px;
+}
+.moe-explorer-page .brand-mark i:nth-child(3) {
+  height: 15px;
+}
+.moe-explorer-page .brand strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+.moe-explorer-page .brand small {
+  display: block;
+  font-size: 10px;
+}
+.moe-explorer-page .nav {
+  display: flex;
+  gap: 4px;
+}
+.moe-explorer-page .nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 13px;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+}
+.moe-explorer-page .nav a:hover {
+  color: var(--accent);
+}
+.moe-explorer-page .nav a.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+.moe-explorer-page .page {
+  max-width: 1680px;
+  margin: auto;
+  padding: 28px 28px 64px;
+}
+.moe-explorer-page .intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px;
+  margin-bottom: 22px;
+}
+.moe-explorer-page .intro > div {
+  max-width: 960px;
+}
+.moe-explorer-page .eyebrow,
+.moe-explorer-page .kicker {
+  color: var(--accent);
+  font:
+    600 10px "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.12em;
+}
+.moe-explorer-page .intro h1 {
+  margin: 7px 0;
+  color: var(--heading);
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+.moe-explorer-page .intro p {
+  margin: 0;
+  max-width: 880px;
+}
+.moe-explorer-page .baseline {
+  flex: 0 0 auto;
+  padding-left: 16px;
+  border-left: 3px solid var(--p-gold);
+  font:
+    12px/1.9 "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .baseline b {
+  color: var(--accent);
+}
+.moe-explorer-page .controls {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.moe-explorer-page .field {
+  display: grid;
+  gap: 4px;
+}
+.moe-explorer-page .field > span {
+  font-size: 11px;
+}
+.moe-explorer-page .field select {
+  min-width: 126px;
+  height: 44px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--heading);
+}
+.moe-explorer-page .check {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+.moe-explorer-page .check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.moe-explorer-page .button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 650;
+}
+.moe-explorer-page .button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--p-subtle);
+}
+.moe-explorer-page .button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.moe-explorer-page .summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--line-strong);
+  margin-bottom: 18px;
+}
+.moe-explorer-page .summary > div {
+  padding: 13px 16px;
+  border-right: 1px solid var(--line);
+}
+.moe-explorer-page .summary > div:last-child {
+  border: 0;
+}
+.moe-explorer-page .summary span {
+  display: block;
+  font-size: 11px;
+}
+.moe-explorer-page .summary strong {
+  color: var(--accent);
+  font:
+    700 21px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+.moe-explorer-page .panel {
+  min-width: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+}
+.moe-explorer-page .panel-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .panel-title strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14px;
+}
+.moe-explorer-page .panel-title span {
+  display: block;
+  font-size: 11px;
+}
+.moe-explorer-page .panel-title code {
+  color: var(--accent);
+  font-size: 11px;
+}
+.moe-explorer-page .heat-scroll {
+  overflow: auto;
+  padding: 16px;
+}
+.moe-explorer-page .heatmap {
+  display: grid;
+  gap: 5px;
+  min-width: 590px;
+}
+.moe-explorer-page .heat-label {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 8px;
+  color: var(--heading);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .heat-label.expert {
+  justify-content: center;
+  border-bottom: 1px solid var(--line-strong);
+}
+.moe-explorer-page .heat-token {
+  min-height: 52px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--heading);
+  text-align: left;
+}
+.moe-explorer-page .heat-token.active {
+  border-color: var(--accent);
+  background: oklch(94% 0.025 260);
+}
+.moe-explorer-page .heat-cell {
+  position: relative;
+  min-height: 52px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  background: var(--cell-bg);
+  color: var(--heading);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .heat-cell:hover {
+  border-color: var(--accent);
+}
+.moe-explorer-page .heat-cell .mark {
+  position: absolute;
+  right: 4px;
+  top: 3px;
+  color: var(--accent);
+  font-weight: 800;
+}
+.moe-explorer-page .heat-cell.dropped {
+  border-color: var(--p-red);
+  color: var(--p-red);
+}
+.moe-explorer-page .heat-cell.redirected {
+  border-color: var(--p-gold);
+  border-width: 2px;
+}
+.moe-explorer-page .heat-cell.off {
+  opacity: 0.48;
+}
+.moe-explorer-page .legend {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+.moe-explorer-page .legend b {
+  color: var(--accent);
+}
+.moe-explorer-page .legend .drop {
+  color: var(--p-red);
+}
+.moe-explorer-page .legend .redirect {
+  color: oklch(55% 0.12 82);
+}
+.moe-explorer-page .inspector {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+}
+.moe-explorer-page .inspect {
+  padding: 20px;
+}
+.moe-explorer-page .inspect h2 {
+  margin: 8px 0 4px;
+  color: var(--heading);
+  font-size: 23px;
+  line-height: 1.25;
+}
+.moe-explorer-page .inspect > p {
+  font-size: 14px;
+}
+.moe-explorer-page .short {
+  display: inline-block;
+  margin: 9px 0;
+  padding: 3px 7px;
+  background: var(--accent);
+  color: var(--bg);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .formula {
+  margin: 14px 0;
+  padding: 12px;
+  background: var(--p-subtle);
+  color: var(--heading);
+  font:
+    12px/1.8 "SFMono-Regular",
+    Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .fact {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.moe-explorer-page .fact code {
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .table-wrap {
+  max-width: 100%;
+  overflow: auto;
+  margin: 12px 0;
+}
+.moe-explorer-page table {
+  border-collapse: collapse;
+  width: 100%;
+  font:
+    11px/1.6 "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page th,
+.moe-explorer-page td {
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+.moe-explorer-page th {
+  background: var(--p-subtle);
+  color: var(--heading);
+}
+.moe-explorer-page td.selected {
+  background: oklch(92% 0.045 305);
+  font-weight: 700;
+}
+.moe-explorer-page .notice {
+  padding: 10px 12px;
+  border: 1px dashed var(--p-gold);
+  font-size: 12px;
+}
+.moe-explorer-page .section {
+  margin-top: 28px;
+}
+.moe-explorer-page .section-head {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
+  gap: 32px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+.moe-explorer-page .section-head h2 {
+  margin: 4px 0;
+  color: var(--heading);
+  font-size: 27px;
+  line-height: 1.25;
+}
+.moe-explorer-page .section-head p {
+  margin: 0;
+  max-width: 75ch;
+}
+.moe-explorer-page .flow-scroll {
+  overflow: auto;
+  background-color: oklch(97.5% 0.006 260);
+  background-image:
+    linear-gradient(oklch(87% 0.012 260/0.25) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(87% 0.012 260/0.25) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.moe-explorer-page #route-flow {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 520px;
+}
+.moe-explorer-page #route-flow .token-box {
+  fill: var(--bg);
+  stroke: var(--line-strong);
+}
+.moe-explorer-page #route-flow .token-box.active {
+  fill: oklch(92% 0.04 260);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.moe-explorer-page #route-flow .expert-box {
+  fill: oklch(95% 0.025 305);
+  stroke: var(--p-purple);
+}
+.moe-explorer-page #route-flow text {
+  fill: var(--heading);
+  font:
+    600 12px "IBM Plex Sans",
+    "PingFang SC",
+    sans-serif;
+  pointer-events: none;
+}
+.moe-explorer-page #route-flow .sub {
+  fill: var(--text);
+  font:
+    10px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page #route-flow .route {
+  fill: none;
+  stroke: var(--p-purple);
+  opacity: 0.24;
+}
+.moe-explorer-page #route-flow .route.focus {
+  stroke: var(--accent);
+  opacity: 0.9;
+}
+.moe-explorer-page #route-flow .route.redirected {
+  stroke: var(--p-gold);
+  opacity: 0.65;
+}
+.moe-explorer-page #route-flow .route.dropped {
+  stroke: var(--p-red);
+  stroke-dasharray: 5 5;
+  opacity: 0.45;
+}
+.moe-explorer-page .load-list {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+.moe-explorer-page .load-row {
+  display: grid;
+  grid-template-columns: 70px minmax(100px, 1fr) 90px;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.moe-explorer-page .load-track {
+  height: 14px;
+  border: 1px solid var(--line);
+  position: relative;
+  background: var(--p-subtle);
+}
+.moe-explorer-page .load-track i {
+  display: block;
+  height: 100%;
+  background: var(--p-purple);
+}
+.moe-explorer-page .load-track i.over {
+  background: var(--p-red);
+}
+.moe-explorer-page .load-row code {
+  text-align: right;
+}
+.moe-explorer-page .training-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+  gap: 18px;
+}
+.moe-explorer-page .training-copy {
+  padding: 20px;
+}
+.moe-explorer-page .training-copy h3 {
+  margin: 0 0 8px;
+  color: var(--heading);
+  font-size: 19px;
+}
+.moe-explorer-page .training-copy p {
+  font-size: 14px;
+}
+.moe-explorer-page .loss-controls {
+  padding: 20px;
+}
+.moe-explorer-page .loss-controls label {
+  display: grid;
+  gap: 8px;
+}
+.moe-explorer-page .loss-controls input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.moe-explorer-page .loss-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin: 18px 0;
+}
+.moe-explorer-page .loss-value strong {
+  color: var(--accent);
+  font:
+    700 30px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .balance-bars {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+.moe-explorer-page .balance-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 52px;
+  align-items: center;
+  gap: 8px;
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .balance-track {
+  height: 9px;
+  background: var(--p-subtle);
+}
+.moe-explorer-page .balance-track i {
+  display: block;
+  height: 100%;
+  background: var(--p-teal);
+}
+.moe-explorer-page .balance-row.importance .balance-track i {
+  background: var(--p-gold);
+}
+.moe-explorer-page .notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.moe-explorer-page .note {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 14px;
+}
+.moe-explorer-page .note h3 {
+  margin: 0 0 7px;
+  color: var(--heading);
+  font-size: 17px;
+}
+.moe-explorer-page .note p {
+  margin: 0;
+  font-size: 14px;
+}
+.moe-explorer-page .footer {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+@media (max-width: 980px) {
+  .moe-explorer-page .workspace,
+  .moe-explorer-page .training-grid {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .inspector {
+    position: static;
+    max-height: none;
+  }
+  .moe-explorer-page .baseline {
+    display: none;
+  }
+  .moe-explorer-page .summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  .moe-explorer-page .summary > div:nth-child(2) {
+    border-right: 0;
+  }
+  .moe-explorer-page .summary > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+  .moe-explorer-page .section-head {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .moe-explorer-page .notes {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .moe-explorer-page .topbar {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .moe-explorer-page .nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .moe-explorer-page .nav a {
+    padding: 0 10px;
+    flex: 0 0 auto;
+  }
+  .moe-explorer-page .page {
+    padding: 22px 14px 44px;
+  }
+  .moe-explorer-page .intro h1 {
+    font-size: 31px;
+  }
+  .moe-explorer-page .intro p {
+    font-size: 14px;
+  }
+  .moe-explorer-page .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .moe-explorer-page .field select {
+    min-width: 0;
+    width: 100%;
+  }
+  .moe-explorer-page .controls > .button {
+    width: 100%;
+  }
+  .moe-explorer-page .check {
+    padding: 0 8px;
+  }
+  .moe-explorer-page .panel-title code {
+    display: none;
+  }
+  .moe-explorer-page .summary strong {
+    font-size: 18px;
+  }
+  .moe-explorer-page .summary > div {
+    padding: 12px 10px;
+  }
+  .moe-explorer-page .heat-scroll {
+    padding: 10px;
+  }
+  .moe-explorer-page #route-flow {
+    min-width: 650px;
+  }
+  .moe-explorer-page .load-row {
+    grid-template-columns: 52px minmax(80px, 1fr) 74px;
+    gap: 8px;
+  }
+  .moe-explorer-page .inspect {
+    padding: 16px;
+  }
+  .moe-explorer-page .section-head h2 {
+    font-size: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moe-explorer-page {
+    scroll-behavior: auto;
+  }
+  .moe-explorer-page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.moe-explorer-page {
+  --p-paper: oklch(98% 0.003 90);
+  --p-subtle: oklch(96.8% 0.004 90);
+  --p-ink: oklch(38% 0.012 260);
+  --p-strong: oklch(27% 0.015 260);
+  --p-blue: oklch(43% 0.19 267);
+  --p-blue2: oklch(51% 0.18 261);
+  --p-gold: oklch(79% 0.14 82);
+  --p-teal: oklch(48% 0.09 195);
+  --p-purple: oklch(52% 0.16 305);
+  --p-red: oklch(52% 0.19 28);
+  --p-line: oklch(87% 0.012 260);
+  --p-line2: oklch(76% 0.018 260);
+  --bg: var(--p-paper);
+  --text: var(--p-ink);
+  --heading: var(--p-strong);
+  --accent: var(--p-blue);
+  --line: var(--p-line);
+  --line-strong: var(--p-line2);
+}
+.moe-explorer-page * {
+  box-sizing: border-box;
+}
+.moe-explorer-page {
+  scroll-behavior: smooth;
+}
+.moe-explorer-page {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    16px/1.65 "IBM Plex Sans",
+    "PingFang SC",
+    "Microsoft YaHei",
+    system-ui,
+    sans-serif;
+}
+.moe-explorer-page button,
+.moe-explorer-page input,
+.moe-explorer-page select {
+  font: inherit;
+}
+.moe-explorer-page button {
+  cursor: pointer;
+}
+.moe-explorer-page button:focus-visible,
+.moe-explorer-page a:focus-visible,
+.moe-explorer-page input:focus-visible,
+.moe-explorer-page select:focus-visible {
+  outline: 3px solid var(--p-gold);
+  outline-offset: 3px;
+}
+.moe-explorer-page a {
+  color: inherit;
+  text-decoration: none;
+}
+.moe-explorer-page code,
+.moe-explorer-page .mono {
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+.moe-explorer-page .topbar {
+  min-height: 68px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.moe-explorer-page .brand-mark {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  width: 28px;
+  height: 30px;
+  padding: 4px;
+  background: var(--accent);
+}
+.moe-explorer-page .brand-mark i {
+  display: block;
+  width: 4px;
+  background: var(--bg);
+}
+.moe-explorer-page .brand-mark i:nth-child(1) {
+  height: 10px;
+}
+.moe-explorer-page .brand-mark i:nth-child(2) {
+  height: 20px;
+}
+.moe-explorer-page .brand-mark i:nth-child(3) {
+  height: 15px;
+}
+.moe-explorer-page .brand strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+.moe-explorer-page .brand small {
+  display: block;
+  font-size: 10px;
+}
+.moe-explorer-page .nav {
+  display: flex;
+  gap: 4px;
+}
+.moe-explorer-page .nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 13px;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+}
+.moe-explorer-page .nav a:hover {
+  color: var(--accent);
+}
+.moe-explorer-page .nav a.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+.moe-explorer-page .page {
+  max-width: 1680px;
+  margin: auto;
+  padding: 28px 28px 64px;
+}
+.moe-explorer-page .intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px;
+  margin-bottom: 22px;
+}
+.moe-explorer-page .intro > div {
+  max-width: 970px;
+}
+.moe-explorer-page .eyebrow,
+.moe-explorer-page .kicker {
+  color: var(--accent);
+  font:
+    600 10px "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.12em;
+}
+.moe-explorer-page .intro h1 {
+  margin: 7px 0;
+  color: var(--heading);
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+.moe-explorer-page .intro p {
+  margin: 0;
+  max-width: 880px;
+}
+.moe-explorer-page .baseline {
+  flex: 0 0 auto;
+  padding-left: 16px;
+  border-left: 3px solid var(--p-gold);
+  font:
+    12px/1.9 "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .baseline b {
+  color: var(--accent);
+}
+.moe-explorer-page .presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.moe-explorer-page #costModule .controls {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(110px, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.moe-explorer-page .field {
+  display: grid;
+  gap: 4px;
+}
+.moe-explorer-page .field > span {
+  font-size: 11px;
+}
+.moe-explorer-page .field select {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 26px 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--heading);
+  font-size: 13px;
+}
+.moe-explorer-page .button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 650;
+}
+.moe-explorer-page .button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--p-subtle);
+}
+.moe-explorer-page .button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.moe-explorer-page .summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--line-strong);
+  margin-bottom: 18px;
+}
+.moe-explorer-page .summary > div {
+  padding: 15px 17px;
+  border-right: 1px solid var(--line);
+}
+.moe-explorer-page .summary > div:last-child {
+  border: 0;
+}
+.moe-explorer-page .summary span {
+  display: block;
+  font-size: 11px;
+}
+.moe-explorer-page .summary strong {
+  display: block;
+  margin: 3px 0;
+  color: var(--accent);
+  font:
+    700 clamp(20px, 2.3vw, 30px) "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .summary code {
+  font-size: 10px;
+}
+.moe-explorer-page .workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+.moe-explorer-page .panel {
+  min-width: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+}
+.moe-explorer-page .panel-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .panel-title strong {
+  display: block;
+  color: var(--heading);
+  font-size: 14px;
+}
+.moe-explorer-page .panel-title span {
+  display: block;
+  font-size: 11px;
+}
+.moe-explorer-page .panel-title code {
+  color: var(--accent);
+  font-size: 11px;
+}
+.moe-explorer-page .ledger {
+  padding: 20px;
+}
+.moe-explorer-page .ledger-row {
+  margin-bottom: 22px;
+}
+.moe-explorer-page .ledger-row:last-child {
+  margin-bottom: 0;
+}
+.moe-explorer-page .ledger-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 7px;
+}
+.moe-explorer-page .ledger-head strong {
+  color: var(--heading);
+  font-size: 14px;
+}
+.moe-explorer-page .ledger-head code {
+  color: var(--accent);
+  font-size: 11px;
+}
+.moe-explorer-page .bar-line {
+  display: grid;
+  grid-template-columns: 90px minmax(100px, 1fr) 110px;
+  align-items: center;
+  gap: 10px;
+  margin: 7px 0;
+  font-size: 11px;
+}
+.moe-explorer-page .bar-track {
+  height: 15px;
+  background: var(--p-subtle);
+  border: 1px solid var(--line);
+}
+.moe-explorer-page .bar-track i {
+  display: block;
+  height: 100%;
+  background: var(--p-line2);
+}
+.moe-explorer-page .bar-line.moe .bar-track i {
+  background: var(--p-purple);
+}
+.moe-explorer-page .bar-line.active .bar-track i {
+  background: var(--accent);
+}
+.moe-explorer-page .bar-line code {
+  text-align: right;
+  color: var(--heading);
+}
+.moe-explorer-page .ledger-note {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+.moe-explorer-page .inspector {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+}
+.moe-explorer-page .inspect {
+  padding: 20px;
+}
+.moe-explorer-page .inspect h2 {
+  margin: 8px 0 4px;
+  color: var(--heading);
+  font-size: 23px;
+  line-height: 1.25;
+}
+.moe-explorer-page .inspect > p {
+  font-size: 14px;
+}
+.moe-explorer-page .short {
+  display: inline-block;
+  margin: 9px 0;
+  padding: 3px 7px;
+  background: var(--accent);
+  color: var(--bg);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .formula {
+  margin: 14px 0;
+  padding: 12px;
+  background: var(--p-subtle);
+  color: var(--heading);
+  font:
+    12px/1.8 "SFMono-Regular",
+    Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .fact {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.moe-explorer-page .fact code {
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .section {
+  margin-top: 28px;
+}
+.moe-explorer-page .section-head {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
+  gap: 32px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+.moe-explorer-page .section-head h2 {
+  margin: 4px 0;
+  color: var(--heading);
+  font-size: 27px;
+  line-height: 1.25;
+}
+.moe-explorer-page .section-head p {
+  margin: 0;
+  max-width: 75ch;
+}
+.moe-explorer-page .expert-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(270px, 0.6fr);
+  gap: 18px;
+}
+.moe-explorer-page .expert-shelf {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(48px, 1fr));
+  gap: 8px;
+}
+.moe-explorer-page #costModule .expert {
+  min-height: 72px;
+  padding: 6px;
+  border: 1px dashed var(--p-purple);
+  background: transparent;
+  color: var(--heading);
+  font:
+    12px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .expert small {
+  display: block;
+  font-size: 9px;
+}
+.moe-explorer-page #costModule .expert.active {
+  border-style: solid;
+  background: oklch(92% 0.045 305);
+  border-width: 2px;
+}
+.moe-explorer-page #costModule .expert.focus {
+  outline: 3px solid var(--p-gold);
+  outline-offset: 2px;
+}
+.moe-explorer-page .expert-detail {
+  padding: 20px;
+}
+.moe-explorer-page .expert-detail h3 {
+  margin: 0 0 8px;
+  color: var(--heading);
+  font-size: 20px;
+}
+.moe-explorer-page .dense-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  margin-bottom: 18px;
+}
+.moe-explorer-page .dense-block {
+  width: 75%;
+  padding: 22px;
+  border: 2px solid var(--accent);
+  background: oklch(94% 0.025 260);
+  color: var(--heading);
+  text-align: center;
+}
+.moe-explorer-page .dense-block strong {
+  display: block;
+  font-size: 18px;
+}
+.moe-explorer-page .dense-block code {
+  font-size: 11px;
+}
+.moe-explorer-page .dense-block span {
+  display: block;
+  margin-top: 8px;
+}
+.moe-explorer-page .queue-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.moe-explorer-page .segmented {
+  display: flex;
+  padding: 3px;
+  border: 1px solid var(--line);
+  background: var(--p-subtle);
+}
+.moe-explorer-page .segmented button {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-weight: 650;
+}
+.moe-explorer-page .segmented button.active {
+  background: var(--accent);
+  color: var(--bg);
+}
+.moe-explorer-page .queue-stats {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .queue-stats b {
+  color: var(--accent);
+}
+.moe-explorer-page .queue {
+  padding: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 110px;
+}
+.moe-explorer-page .queue-item {
+  min-width: 82px;
+  padding: 8px 10px;
+  border: 1px solid var(--p-purple);
+  background: oklch(95% 0.025 305);
+  color: var(--heading);
+  font:
+    11px "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+.moe-explorer-page .queue-item small {
+  display: block;
+  color: var(--text);
+}
+.moe-explorer-page .queue-divider {
+  flex: 0 0 2px;
+  background: var(--p-gold);
+  margin: 4px 2px;
+}
+.moe-explorer-page .notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.moe-explorer-page .note {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 14px;
+}
+.moe-explorer-page .note h3 {
+  margin: 0 0 7px;
+  color: var(--heading);
+  font-size: 17px;
+}
+.moe-explorer-page .note p {
+  margin: 0;
+  font-size: 14px;
+}
+.moe-explorer-page .footer {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+@media (max-width: 1200px) {
+  .moe-explorer-page #costModule .controls {
+    grid-template-columns: repeat(4, minmax(110px, 1fr));
+  }
+}
+@media (max-width: 980px) {
+  .moe-explorer-page .workspace,
+  .moe-explorer-page .expert-layout {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .inspector {
+    position: static;
+    max-height: none;
+  }
+  .moe-explorer-page .baseline {
+    display: none;
+  }
+  .moe-explorer-page .summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  .moe-explorer-page .summary > div:nth-child(2) {
+    border-right: 0;
+  }
+  .moe-explorer-page .summary > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+  .moe-explorer-page .section-head {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .moe-explorer-page .notes {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .expert-shelf {
+    grid-template-columns: repeat(4, minmax(48px, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .moe-explorer-page .topbar {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .moe-explorer-page .nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .moe-explorer-page .nav a {
+    padding: 0 10px;
+    flex: 0 0 auto;
+  }
+  .moe-explorer-page .page {
+    padding: 22px 14px 44px;
+  }
+  .moe-explorer-page .intro h1 {
+    font-size: 31px;
+  }
+  .moe-explorer-page .intro p {
+    font-size: 14px;
+  }
+  .moe-explorer-page #costModule .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .moe-explorer-page .summary strong {
+    font-size: 18px;
+  }
+  .moe-explorer-page .summary > div {
+    padding: 12px 10px;
+  }
+  .moe-explorer-page .panel-title code {
+    display: none;
+  }
+  .moe-explorer-page .ledger {
+    padding: 14px;
+  }
+  .moe-explorer-page .bar-line {
+    grid-template-columns: 62px minmax(70px, 1fr) 82px;
+    gap: 6px;
+  }
+  .moe-explorer-page .expert-shelf {
+    padding: 12px;
+    gap: 6px;
+  }
+  .moe-explorer-page #costModule .expert {
+    min-height: 64px;
+    padding: 4px;
+  }
+  .moe-explorer-page .inspect {
+    padding: 16px;
+  }
+  .moe-explorer-page .section-head h2 {
+    font-size: 24px;
+  }
+  .moe-explorer-page .queue {
+    padding: 12px;
+  }
+  .moe-explorer-page .queue-item {
+    min-width: 72px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moe-explorer-page {
+    scroll-behavior: auto;
+  }
+  .moe-explorer-page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Final integrated-layout overrides */
+@media (min-width: 1181px) {
+  .moe-explorer-page .workspace {
+    grid-template-columns: minmax(0, 1.17fr) minmax(480px, 1fr);
+  }
+}
+@media (max-width: 1180px) {
+  .moe-explorer-page .workspace {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .inspector {
+    position: static;
+    max-height: none;
+  }
+}
+.moe-explorer-page #costModule .expert small {
+  display: block;
+  font-size: 9px;
+}
+
+/* Readability, dispatch scale and collapsible document outline */
+@media (min-width: 721px) {
+  .moe-explorer-page {
+    padding-left: 48px;
+    transition: padding-left 0.18s ease;
+  }
+  .moe-explorer-page .page {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+@media (min-width: 1181px) {
+  .moe-explorer-page .workspace {
+    grid-template-columns: minmax(0, 1.55fr) minmax(480px, 1fr);
+  }
+}
+.moe-explorer-page #networkSection .panel-title strong,
+.moe-explorer-page #networkSection + .inspector .panel-title strong {
+  font-size: 16px;
+}
+.moe-explorer-page #networkSection .panel-title span,
+.moe-explorer-page #networkSection + .inspector .panel-title span {
+  font-size: 12px;
+}
+.moe-explorer-page #networkSection .panel-title code,
+.moe-explorer-page #networkSection + .inspector .panel-title code {
+  font-size: 12px;
+}
+.moe-explorer-page #network .node text {
+  font-size: 16px;
+}
+.moe-explorer-page #network .node .sub {
+  font-size: 12px;
+}
+.moe-explorer-page #network .expert-op text {
+  font-size: 13.5px;
+}
+.moe-explorer-page #network .expert-op .sub {
+  font-size: 11px;
+}
+.moe-explorer-page #network .expert-op .value {
+  font-size: 10.5px;
+}
+.moe-explorer-page #network .residual-label {
+  font-size: 12px;
+}
+.moe-explorer-page #networkSection .legend {
+  font-size: 12px;
+}
+.moe-explorer-page #networkSection + .inspector .inspect {
+  padding: 22px;
+}
+.moe-explorer-page #networkSection + .inspector .inspect h2 {
+  font-size: 26px;
+}
+.moe-explorer-page #networkSection + .inspector .inspect > p {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.moe-explorer-page #networkSection + .inspector .formula {
+  font-size: 13.5px;
+  line-height: 1.85;
+}
+.moe-explorer-page #networkSection + .inspector .fact {
+  font-size: 13px;
+  grid-template-columns: 92px minmax(0, 1fr);
+}
+.moe-explorer-page #networkSection + .inspector table {
+  font-size: 12.5px;
+}
+.moe-explorer-page #networkSection + .inspector th,
+.moe-explorer-page #networkSection + .inspector td {
+  padding: 8px;
+}
+.moe-explorer-page #networkSection + .inspector .matrix-caption {
+  font-size: 11px;
+}
+.moe-explorer-page #networkSection + .inspector .notice {
+  font-size: 13px;
+}
+.moe-explorer-page #networkSection + .inspector .short {
+  font-size: 12px;
+}
+.moe-explorer-page #networkSection + .inspector .expert-tabs button {
+  font-size: 14px;
+}
+.moe-explorer-page #routeModule .flow-scroll {
+  padding: 18px 0;
+  display: flex;
+  justify-content: center;
+}
+.moe-explorer-page #route-flow {
+  width: 100%;
+  max-width: 900px;
+  min-height: 0;
+  height: auto;
+  margin: 0 auto;
+}
+.moe-explorer-page #route-flow text {
+  font-size: 11px;
+}
+.moe-explorer-page #route-flow .sub {
+  font-size: 9.5px;
+}
+.moe-explorer-page .doc-target {
+  scroll-margin-top: 24px;
+}
+.moe-explorer-page .doc-outline {
+  position: fixed;
+  z-index: 60;
+  left: 0;
+  top: 92px;
+  width: 248px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--text);
+}
+.moe-explorer-page .doc-toggle {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--muted-surface);
+  color: var(--heading);
+  text-align: left;
+  font-weight: 700;
+}
+.moe-explorer-page .doc-toggle-icon {
+  display: grid;
+  gap: 3px;
+  width: 16px;
+  flex: 0 0 auto;
+}
+.moe-explorer-page .doc-toggle-icon i {
+  display: block;
+  height: 2px;
+  background: var(--accent);
+}
+.moe-explorer-page .doc-toggle-text {
+  flex: 1;
+  font-size: 13px;
+}
+.moe-explorer-page .doc-chevron {
+  color: var(--accent);
+  font:
+    16px Consolas,
+    monospace;
+}
+.moe-explorer-page .doc-tree {
+  max-height: calc(100dvh - 160px);
+  overflow: auto;
+  padding: 8px 12px 14px;
+}
+.moe-explorer-page .doc-group {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.moe-explorer-page .doc-group:last-child {
+  border-bottom: 0;
+}
+.moe-explorer-page .doc-group h2 {
+  margin: 0 0 4px;
+  color: var(--heading);
+  font:
+    700 11px/1.5 "SFMono-Regular",
+    Consolas,
+    "PingFang SC",
+    sans-serif;
+  letter-spacing: 0.035em;
+}
+.moe-explorer-page .doc-group a {
+  position: relative;
+  display: block;
+  min-height: 34px;
+  padding: 7px 8px 7px 20px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.moe-explorer-page .doc-group a:before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 14px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--p-line2);
+}
+.moe-explorer-page .doc-group a:hover {
+  color: var(--accent);
+  background: var(--muted-surface);
+}
+.moe-explorer-page .doc-group a.active {
+  color: var(--accent);
+  background: oklch(94% 0.025 260);
+  font-weight: 700;
+}
+.moe-explorer-page .doc-group a.active:before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.moe-explorer-page .doc-outline.collapsed {
+  width: 48px;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-tree {
+  display: none;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-toggle {
+  min-height: 104px;
+  padding: 10px 8px;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 0;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-toggle-text {
+  flex: 0;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-chevron {
+  display: none;
+}
+@media (min-width: 1720px) {
+  .moe-explorer-page.outline-docked {
+    padding-left: 248px;
+  }
+  .moe-explorer-page.outline-docked .doc-outline {
+    left: 12px;
+  }
+}
+@media (max-width: 720px) {
+  .moe-explorer-page .doc-outline {
+    left: 12px;
+    top: auto;
+    bottom: 14px;
+    width: min(300px, calc(100vw - 24px));
+  }
+  .moe-explorer-page .doc-outline.collapsed {
+    width: 48px;
+  }
+  .moe-explorer-page .doc-outline.collapsed .doc-toggle {
+    min-height: 48px;
+  }
+  .moe-explorer-page .doc-outline.collapsed .doc-toggle-text {
+    writing-mode: horizontal-tb;
+    display: none;
+  }
+  .moe-explorer-page .doc-tree {
+    max-height: min(62dvh, 560px);
+  }
+  .moe-explorer-page #routeModule .flow-scroll {
+    justify-content: flex-start;
+    padding: 12px 0;
+  }
+  .moe-explorer-page #route-flow {
+    min-width: 650px;
+    max-width: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moe-explorer-page {
+    transition: none !important;
+  }
+}
+
+/* Transformer position diagram and compact collapsed label */
+.moe-explorer-page .doc-label-collapsed {
+  display: none;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-toggle {
+  min-height: 82px;
+  padding: 10px 7px;
+  gap: 8px;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-toggle-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  writing-mode: horizontal-tb;
+  letter-spacing: 0;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-label-full {
+  display: none;
+}
+.moe-explorer-page .doc-outline.collapsed .doc-label-collapsed {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.24em;
+}
+.moe-explorer-page .position-section {
+  margin-top: 8px;
+}
+.moe-explorer-page .position-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+.moe-explorer-page .position-scroll {
+  overflow: auto;
+  padding: 16px;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(oklch(87% 0.012 260/0.25) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(87% 0.012 260/0.25) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.moe-explorer-page #positionDiagram {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  min-height: 0;
+  margin: 0 auto;
+}
+.moe-explorer-page #positionDiagram .position-edges path {
+  stroke: var(--p-line2);
+  stroke-width: 1.5;
+  marker-end: url(#positionArrow);
+}
+.moe-explorer-page #positionDiagram .position-edges .position-residual {
+  stroke: var(--p-gold);
+  stroke-width: 2.2;
+  marker-end: url(#positionArrowGold);
+}
+.moe-explorer-page #positionDiagram .position-edges .position-moe {
+  stroke: var(--p-purple);
+  stroke-width: 2.5;
+  marker-end: url(#positionArrowPurple);
+}
+.moe-explorer-page #positionDiagram .position-node rect {
+  fill: var(--bg);
+  stroke: var(--p-line2);
+  stroke-width: 1.3;
+}
+.moe-explorer-page #positionDiagram .position-node text {
+  fill: var(--heading);
+  font:
+    600 14px "SFMono-Regular",
+    Consolas,
+    "PingFang SC",
+    sans-serif;
+  text-anchor: middle;
+}
+.moe-explorer-page #positionDiagram .position-node .position-sub {
+  fill: var(--text);
+  font:
+    11px "IBM Plex Sans",
+    "PingFang SC",
+    sans-serif;
+}
+.moe-explorer-page #positionDiagram .position-node.attention-op rect {
+  fill: oklch(92% 0.045 260);
+  stroke: var(--accent);
+}
+.moe-explorer-page #positionDiagram .position-node.moe rect {
+  fill: oklch(94% 0.035 305);
+  stroke: var(--p-purple);
+  stroke-width: 2.5;
+}
+.moe-explorer-page #positionDiagram .position-node.residual rect {
+  fill: var(--bg);
+  stroke: var(--p-gold);
+  stroke-width: 3;
+}
+.moe-explorer-page #positionDiagram .position-node.output rect {
+  fill: oklch(96% 0.02 82);
+  stroke: var(--p-gold);
+  stroke-width: 2;
+}
+.moe-explorer-page #positionDiagram .position-phase {
+  fill: var(--accent);
+  font:
+    700 11px "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.07em;
+}
+.moe-explorer-page #positionDiagram .position-trunk {
+  fill: var(--text);
+  font:
+    11px "IBM Plex Sans",
+    "PingFang SC",
+    sans-serif;
+}
+.moe-explorer-page #positionDiagram .position-residual-text {
+  fill: oklch(61% 0.12 82);
+  font:
+    600 11px "IBM Plex Sans",
+    "PingFang SC",
+    sans-serif;
+}
+.moe-explorer-page .position-copy {
+  padding: 22px;
+  border-top: 2px solid var(--p-purple);
+  background: var(--muted-surface);
+}
+.moe-explorer-page .position-copy h3 {
+  margin: 10px 0;
+  color: var(--heading);
+  font-size: 21px;
+  line-height: 1.45;
+}
+.moe-explorer-page .position-copy p {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.moe-explorer-page .position-facts {
+  margin: 16px 0;
+}
+.moe-explorer-page .position-facts > div {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.moe-explorer-page .position-facts code {
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+.moe-explorer-page .position-copy .position-note {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+@media (min-width: 1181px) {
+  .moe-explorer-page .workspace,
+  .moe-explorer-page .position-layout {
+    grid-template-columns: minmax(0, 1.55fr) minmax(480px, 1fr);
+  }
+  .moe-explorer-page .position-copy {
+    position: sticky;
+    top: 24px;
+  }
+}
+@media (max-width: 1180px) {
+  .moe-explorer-page .position-layout {
+    grid-template-columns: 1fr;
+  }
+  .moe-explorer-page .position-copy {
+    border-top: 0;
+    border-left: 2px solid var(--p-purple);
+  }
+}
+@media (max-width: 720px) {
+  .moe-explorer-page .doc-outline.collapsed .doc-toggle-text {
+    display: none;
+  }
+  .moe-explorer-page .position-scroll:after {
+    content: "横向滚动查看完整 Transformer Block";
+    display: block;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .moe-explorer-page #positionDiagram {
+    min-width: 760px;
+    max-width: none;
+    min-height: 0;
+  }
+  .moe-explorer-page .position-copy {
+    padding: 16px;
+  }
+  .moe-explorer-page .position-copy h3 {
+    font-size: 19px;
+  }
+}
+/* 路由概率与实际执行状态分离：底色只编码概率，边框和连线编码执行结果。 */
+.moe-explorer-page .heat-cell.accepted {
+  border: 2px solid var(--accent);
+}
+.moe-explorer-page .heat-cell.accepted .mark {
+  color: var(--accent);
+}
+.moe-explorer-page .heat-cell.redirected .mark {
+  color: oklch(55% 0.12 82);
+}
+.moe-explorer-page .heat-cell.dropped {
+  border: 1px dashed var(--p-red);
+  background: color-mix(in oklab, var(--cell-bg) 42%, var(--surface));
+  color: var(--p-red);
+}
+.moe-explorer-page .heat-cell.dropped .mark {
+  color: var(--p-red);
+}
+.moe-explorer-page .heat-cell.off {
+  opacity: 0.36;
+}
+.moe-explorer-page #route-flow .route.focus {
+  opacity: 0.95;
+}
+.moe-explorer-page #route-flow .route.accepted.focus {
+  stroke: var(--accent);
+}
+.moe-explorer-page #route-flow .route.redirected.focus {
+  stroke: var(--p-gold);
+}
+.moe-explorer-page #route-flow .route.dropped.focus {
+  stroke: var(--p-red);
+}
+@media (min-width: 1181px) {
+  .moe-explorer-page #routeModule .summary {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
