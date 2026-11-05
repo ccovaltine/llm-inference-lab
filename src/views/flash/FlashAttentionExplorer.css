@@ -1,5 +1,5 @@
 /* ============ 设计基元：与「LLM 推理实验室」同一套 OKLCH 色板与字体 ============ */
-@import "../lib/doc-outline.css";
+@import "../../lib/doc-outline.css";
 .flash-attention-page {
   --paper: oklch(98% 0.003 90);
   --paper-subtle: oklch(96.8% 0.004 90);

@@ -1,4 +1,4 @@
-import { setupDocOutline } from "../lib/setupDocOutline.js";
+import { setupDocOutline } from "../../lib/setupDocOutline.js";
 
 export function initializeFlashAttentionExplorer(root) {
   const controller = new AbortController();

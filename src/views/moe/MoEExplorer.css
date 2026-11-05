@@ -1,5 +1,5 @@
 /* MoE 页面独立作用域样式 */
-@import "../lib/doc-outline.css";
+@import "../../lib/doc-outline.css";
 
 .moe-explorer-page {
   --p-paper: oklch(98% 0.003 90);

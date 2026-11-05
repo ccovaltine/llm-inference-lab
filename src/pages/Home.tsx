@@ -16,11 +16,11 @@ import {
 } from "@/lib/tinyTransformer";
 
 // 实验台视图随首屏直接打包（lab 永不懒加载）；其余视图按需加载并在空闲时预取。
-const KVCacheReplay = lazy(() => import("@/components/KVCacheReplay"));
-const AttentionNetwork = lazy(() => import("@/components/AttentionNetwork"));
-const FlashAttentionExplorer = lazy(() => import("@/components/FlashAttentionExplorer"));
-const MoEExplorer = lazy(() => import("@/components/MoEExplorer"));
-const Concepts = lazy(() => import("@/components/Concepts"));
+const KVCacheReplay = lazy(() => import("@/views/kv/KVCacheReplay"));
+const AttentionNetwork = lazy(() => import("@/views/attention/AttentionNetwork"));
+const FlashAttentionExplorer = lazy(() => import("@/views/flash/FlashAttentionExplorer"));
+const MoEExplorer = lazy(() => import("@/views/moe/MoEExplorer"));
+const Concepts = lazy(() => import("@/views/concepts/Concepts"));
 const NotebookView = lazy(() => import("@/views/NotebookView"));
 
 const EXAMPLES = ["小猫坐在垫子上", "机器人站在沙发旁边", "小狗躺在草地上"];
@@ -64,11 +64,11 @@ export default function HomeShell() {
 
   useEffect(() => {
     const prefetch = () => {
-      void import("@/components/KVCacheReplay");
-      void import("@/components/AttentionNetwork");
-      void import("@/components/FlashAttentionExplorer");
-      void import("@/components/MoEExplorer");
-      void import("@/components/Concepts");
+      void import("@/views/kv/KVCacheReplay");
+      void import("@/views/attention/AttentionNetwork");
+      void import("@/views/flash/FlashAttentionExplorer");
+      void import("@/views/moe/MoEExplorer");
+      void import("@/views/concepts/Concepts");
       void import("@/views/NotebookView");
     };
     if (typeof window.requestIdleCallback === "function") {
