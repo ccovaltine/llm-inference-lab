@@ -135,10 +135,6 @@ export function getLayerParameters(layer: number) {
   return weights[layer];
 }
 
-export function getOutputParameters(tokenId: number) {
-  return { weights: unembedding[tokenId], bias: outputBias[tokenId] };
-}
-
 export function getEmbeddingParameters() {
   return { token: tokenEmbedding, position: positionEmbedding };
 }
@@ -287,6 +283,3 @@ export function tokensToText(tokens: Token[]) {
     .join(" ");
 }
 
-export function vectorNorm(vector: number[]) {
-  return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
-}
