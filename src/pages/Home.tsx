@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   BookOpen, Database, FlaskConical, FolderClock, LoaderCircle,
@@ -9,17 +9,19 @@ import "../App.css";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { IS_STATIC_DEMO } from "@/const";
-import Concepts from "@/components/Concepts";
-import AttentionNetwork from "@/components/AttentionNetwork";
-import KVCacheReplay from "@/components/KVCacheReplay";
-import MoEExplorer from "@/components/MoEExplorer";
-import FlashAttentionExplorer from "@/components/FlashAttentionExplorer";
 import LabView from "@/views/LabView";
-import NotebookView from "@/views/NotebookView";
 import {
   MODEL_CONFIG, forward, getCandidates, tokenize,
   type Candidate, type Token,
 } from "@/lib/tinyTransformer";
+
+// 实验台视图随首屏直接打包（lab 永不懒加载）；其余视图按需加载并在空闲时预取。
+const KVCacheReplay = lazy(() => import("@/components/KVCacheReplay"));
+const AttentionNetwork = lazy(() => import("@/components/AttentionNetwork"));
+const FlashAttentionExplorer = lazy(() => import("@/components/FlashAttentionExplorer"));
+const MoEExplorer = lazy(() => import("@/components/MoEExplorer"));
+const Concepts = lazy(() => import("@/components/Concepts"));
+const NotebookView = lazy(() => import("@/views/NotebookView"));
 
 const EXAMPLES = ["小猫坐在垫子上", "机器人站在沙发旁边", "小狗躺在草地上"];
 type View = "lab" | "kv" | "attention" | "flash" | "moe" | "concepts" | "notebook";
@@ -59,6 +61,23 @@ export default function HomeShell() {
   );
   const selectedCandidate = candidates.find((item) => item.id === selectedCandidateId) ?? candidates[0];
   const canGenerate = trace.tokens.length < MODEL_CONFIG.maxTokens && trace.tokens.at(-1)?.id !== 1;
+
+  useEffect(() => {
+    const prefetch = () => {
+      void import("@/components/KVCacheReplay");
+      void import("@/components/AttentionNetwork");
+      void import("@/components/FlashAttentionExplorer");
+      void import("@/components/MoEExplorer");
+      void import("@/components/Concepts");
+      void import("@/views/NotebookView");
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(prefetch);
+      return () => window.cancelIdleCallback(handle);
+    }
+    const handle = window.setTimeout(prefetch, 200);
+    return () => window.clearTimeout(handle);
+  }, []);
 
   function runPrompt(nextPrompt = draft) {
     const clean = nextPrompt.trim();
@@ -170,18 +189,18 @@ export default function HomeShell() {
         />
       )}
 
-      {view === "kv" && <KVCacheReplay />}
+      {view === "kv" && <Suspense fallback={null}><KVCacheReplay /></Suspense>}
 
-      {view === "attention" && <AttentionNetwork />}
+      {view === "attention" && <Suspense fallback={null}><AttentionNetwork /></Suspense>}
 
-      {view === "flash" && <FlashAttentionExplorer />}
+      {view === "flash" && <Suspense fallback={null}><FlashAttentionExplorer /></Suspense>}
 
-      {view === "moe" && <MoEExplorer />}
+      {view === "moe" && <Suspense fallback={null}><MoEExplorer /></Suspense>}
 
-      {view === "concepts" && <main className="subpage"><Concepts /></main>}
+      {view === "concepts" && <main className="subpage"><Suspense fallback={null}><Concepts /></Suspense></main>}
 
       {view === "notebook" && (
-        <NotebookView
+        <Suspense fallback={null}><NotebookView
           user={user}
           authLoading={authLoading}
           isAuthenticated={isAuthenticated}
@@ -189,7 +208,7 @@ export default function HomeShell() {
           onLoadExperiment={loadExperiment}
           onDeleteExperiment={(id) => deleteExperiment.mutate({ id })}
           onSwitchView={switchView}
-        />
+        /></Suspense>
       )}
     </div>
   );
