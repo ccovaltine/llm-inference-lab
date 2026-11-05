@@ -1024,7 +1024,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 0 0 auto;
 }
 .moe-explorer-page .brand-mark {
   display: flex;
@@ -1053,7 +1052,6 @@
   display: block;
   color: var(--heading);
   font-size: 14px;
-  letter-spacing: 0.1em;
 }
 .moe-explorer-page .brand small {
   display: block;
@@ -1792,7 +1790,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 0 0 auto;
 }
 .moe-explorer-page .brand-mark {
   display: flex;
@@ -1821,7 +1818,6 @@
   display: block;
   color: var(--heading);
   font-size: 14px;
-  letter-spacing: 0.1em;
 }
 .moe-explorer-page .brand small {
   display: block;
