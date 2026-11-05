@@ -788,3 +788,20 @@ button.transform-arrow-toggle:hover, .transform-arrow-toggle.is-open { backgroun
   .operation-analysis-column { grid-template-columns: 1fr; }
   .analysis-column-heading { grid-column: 1; }
 }
+
+/* The fourth navigation item must remain on one line on small screens. */
+@media (max-width: 767px) {
+  .main-nav button {
+    white-space: nowrap;
+  }
+}
+@media (max-width: 390px) {
+  .main-nav button {
+    gap: 3px;
+    padding-inline: 2px;
+    font-size: 10px;
+  }
+  .main-nav button svg {
+    width: 13px;
+  }
+}
