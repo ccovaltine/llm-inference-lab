@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   ArrowRight, BookOpen, CircleStop, Database, FlaskConical, FolderClock, LoaderCircle,
-  LogIn, Network, Play, Save, Sparkles, Trash2, UserRound, Waypoints,
+  LogIn, Network, Play, Save, Sparkles, Trash2, UserRound, Waypoints, Zap,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import "../App.css";
@@ -14,6 +14,7 @@ import TransformerWorkbench from "@/components/TransformerWorkbench";
 import AttentionNetwork from "@/components/AttentionNetwork";
 import KVCacheReplay from "@/components/KVCacheReplay";
 import MoEExplorer from "@/components/MoEExplorer";
+import FlashAttentionExplorer from "@/components/FlashAttentionExplorer";
 import { ArchitectureStrip } from "@/components/InferenceVisual";
 import {
   MODEL_CONFIG, forward, getCandidates, tokenize,
@@ -21,7 +22,7 @@ import {
 } from "@/lib/tinyTransformer";
 
 const EXAMPLES = ["小猫坐在垫子上", "机器人站在沙发旁边", "小狗躺在草地上"];
-type View = "lab" | "kv" | "attention" | "moe" | "concepts" | "notebook";
+type View = "lab" | "kv" | "attention" | "flash" | "moe" | "concepts" | "notebook";
 
 export default function Home() {
   const [view, setView] = useState<View>("lab");
@@ -128,6 +129,7 @@ export default function Home() {
           <button type="button" className={view === "lab" ? "is-active" : ""} onClick={() => switchView("lab")}><FlaskConical />实验台</button>
           <button type="button" className={view === "kv" ? "is-active" : ""} onClick={() => switchView("kv")}><Database />KV Cache</button>
           <button type="button" className={view === "attention" ? "is-active" : ""} onClick={() => switchView("attention")}><Network />注意力网络</button>
+          <button type="button" className={view === "flash" ? "is-active" : ""} onClick={() => switchView("flash")}><Zap />FlashAttention</button>
           <button type="button" className={view === "moe" ? "is-active" : ""} onClick={() => switchView("moe")}><Waypoints />MoE 网络</button>
           <button type="button" className={view === "concepts" ? "is-active" : ""} onClick={() => switchView("concepts")}><BookOpen />概念速查</button>
           <button type="button" className={view === "notebook" ? "is-active" : ""} onClick={() => switchView("notebook")}><FolderClock />我的实验</button>
@@ -202,6 +204,8 @@ export default function Home() {
       {view === "kv" && <KVCacheReplay />}
 
       {view === "attention" && <AttentionNetwork />}
+
+      {view === "flash" && <FlashAttentionExplorer />}
 
       {view === "moe" && <MoEExplorer />}
 
