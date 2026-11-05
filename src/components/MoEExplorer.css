@@ -75,76 +75,19 @@
 .moe-explorer-page .mono {
   font-family: "SFMono-Regular", Consolas, monospace;
 }
-.moe-explorer-page .topbar {
-  min-height: 68px;
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-bottom: 1px solid var(--line);
-}
-.moe-explorer-page .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 0 0 auto;
-}
-.moe-explorer-page .brand-mark {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  width: 28px;
-  height: 30px;
-  padding: 4px;
-  background: var(--accent);
-}
-.moe-explorer-page .brand-mark i {
-  display: block;
-  width: 4px;
-  background: var(--bg);
-}
-.moe-explorer-page .brand-mark i:nth-child(1) {
-  height: 10px;
-}
-.moe-explorer-page .brand-mark i:nth-child(2) {
-  height: 20px;
-}
-.moe-explorer-page .brand-mark i:nth-child(3) {
-  height: 15px;
-}
-.moe-explorer-page .brand strong {
-  display: block;
-  color: var(--heading);
-  font-size: 14px;
-  letter-spacing: 0.1em;
-}
-.moe-explorer-page .brand small {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-}
-.moe-explorer-page .nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.moe-explorer-page .nav a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 13px;
-  border-bottom: 2px solid transparent;
-  font-size: 13px;
-}
-.moe-explorer-page .nav a:hover {
-  color: var(--accent);
-}
-.moe-explorer-page .nav a.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  font-weight: 700;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .moe-explorer-page .page {
   max-width: 1680px;
   margin: auto;
@@ -714,19 +657,9 @@
   }
 }
 @media (max-width: 640px) {
-  .moe-explorer-page .topbar {
-    padding: 10px 16px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .moe-explorer-page .nav {
-    width: 100%;
-    overflow-x: auto;
-  }
-  .moe-explorer-page .nav a {
-    padding: 0 10px;
-    flex: 0 0 auto;
-  }
+  
+  
+  
   .moe-explorer-page .page {
     padding: 22px 14px 44px;
   }
@@ -909,9 +842,7 @@
     Consolas,
     monospace;
 }
-.moe-explorer-page .cost-presets {
-  margin-bottom: 12px;
-}
+
 @media (max-width: 1180px) {
   .moe-explorer-page .workspace {
     grid-template-columns: 1fr;
@@ -1011,72 +942,19 @@
 .moe-explorer-page .mono {
   font-family: "SFMono-Regular", Consolas, monospace;
 }
-.moe-explorer-page .topbar {
-  min-height: 68px;
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-bottom: 1px solid var(--line);
-}
-.moe-explorer-page .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.moe-explorer-page .brand-mark {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  width: 28px;
-  height: 30px;
-  padding: 4px;
-  background: var(--accent);
-}
-.moe-explorer-page .brand-mark i {
-  display: block;
-  width: 4px;
-  background: var(--bg);
-}
-.moe-explorer-page .brand-mark i:nth-child(1) {
-  height: 10px;
-}
-.moe-explorer-page .brand-mark i:nth-child(2) {
-  height: 20px;
-}
-.moe-explorer-page .brand-mark i:nth-child(3) {
-  height: 15px;
-}
-.moe-explorer-page .brand strong {
-  display: block;
-  color: var(--heading);
-  font-size: 14px;
-}
-.moe-explorer-page .brand small {
-  display: block;
-  font-size: 10px;
-}
-.moe-explorer-page .nav {
-  display: flex;
-  gap: 4px;
-}
-.moe-explorer-page .nav a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 13px;
-  border-bottom: 2px solid transparent;
-  font-size: 13px;
-}
-.moe-explorer-page .nav a:hover {
-  color: var(--accent);
-}
-.moe-explorer-page .nav a.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  font-weight: 700;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .moe-explorer-page .page {
   max-width: 1680px;
   margin: auto;
@@ -1642,19 +1520,9 @@
   }
 }
 @media (max-width: 640px) {
-  .moe-explorer-page .topbar {
-    padding: 10px 16px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .moe-explorer-page .nav {
-    width: 100%;
-    overflow-x: auto;
-  }
-  .moe-explorer-page .nav a {
-    padding: 0 10px;
-    flex: 0 0 auto;
-  }
+  
+  
+  
   .moe-explorer-page .page {
     padding: 22px 14px 44px;
   }
@@ -1777,72 +1645,19 @@
 .moe-explorer-page .mono {
   font-family: "SFMono-Regular", Consolas, monospace;
 }
-.moe-explorer-page .topbar {
-  min-height: 68px;
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-bottom: 1px solid var(--line);
-}
-.moe-explorer-page .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.moe-explorer-page .brand-mark {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  width: 28px;
-  height: 30px;
-  padding: 4px;
-  background: var(--accent);
-}
-.moe-explorer-page .brand-mark i {
-  display: block;
-  width: 4px;
-  background: var(--bg);
-}
-.moe-explorer-page .brand-mark i:nth-child(1) {
-  height: 10px;
-}
-.moe-explorer-page .brand-mark i:nth-child(2) {
-  height: 20px;
-}
-.moe-explorer-page .brand-mark i:nth-child(3) {
-  height: 15px;
-}
-.moe-explorer-page .brand strong {
-  display: block;
-  color: var(--heading);
-  font-size: 14px;
-}
-.moe-explorer-page .brand small {
-  display: block;
-  font-size: 10px;
-}
-.moe-explorer-page .nav {
-  display: flex;
-  gap: 4px;
-}
-.moe-explorer-page .nav a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 13px;
-  border-bottom: 2px solid transparent;
-  font-size: 13px;
-}
-.moe-explorer-page .nav a:hover {
-  color: var(--accent);
-}
-.moe-explorer-page .nav a.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  font-weight: 700;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .moe-explorer-page .page {
   max-width: 1680px;
   margin: auto;
@@ -2331,19 +2146,9 @@
   }
 }
 @media (max-width: 640px) {
-  .moe-explorer-page .topbar {
-    padding: 10px 16px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .moe-explorer-page .nav {
-    width: 100%;
-    overflow-x: auto;
-  }
-  .moe-explorer-page .nav a {
-    padding: 0 10px;
-    flex: 0 0 auto;
-  }
+  
+  
+  
   .moe-explorer-page .page {
     padding: 22px 14px 44px;
   }

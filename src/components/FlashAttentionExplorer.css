@@ -60,11 +60,7 @@
 .flash-attention-page .mono {
   font-family: var(--mono);
 }
-.flash-attention-page .wrap {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 0 max(20px, calc((100vw - 1360px) / 2));
-}
+
 
 /* ============ 顶部导航 ============ */
 .flash-attention-page .site-header {
@@ -102,169 +98,33 @@
   color: var(--blue);
 }
 /* ============ 左侧悬浮目录 ============ */
-.flash-attention-page .toc {
-  position: fixed;
-  z-index: 60;
-  left: 26px;
-  top: 96px;
-  width: 236px;
-  background: color-mix(in oklch, var(--paper) 96%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  box-shadow: 0 12px 36px oklch(30% 0.015 260 / 0.16);
-  overflow: hidden;
-  transition: width 0.22s ease;
-}
-.flash-attention-page .toc-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 10px 10px 8px 14px;
-  border-bottom: 1px solid var(--line);
-}
-.flash-attention-page .toc-head b {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  color: var(--ink-strong);
-  white-space: nowrap;
-}
-.flash-attention-page .toc-toggle {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 14px;
-  line-height: 1;
-  display: grid;
-  place-items: center;
-  transition:
-    background-color 0.15s ease-out,
-    color 0.15s ease-out;
-}
-.flash-attention-page .toc-toggle:hover {
-  background: var(--blue-ghost);
-  color: var(--blue);
-}
-.flash-attention-page .toc-link {
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-  padding: 9px 14px 9px 16px;
-  font-size: 13px;
-  color: var(--ink);
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  white-space: nowrap;
-  transition:
-    background-color 0.15s ease-out,
-    color 0.15s ease-out,
-    border-color 0.15s ease-out;
-}
-.flash-attention-page .toc-link i {
-  font-family: var(--mono);
-  font-style: normal;
-  font-size: 10px;
-  color: var(--ink);
-  opacity: 0.6;
-}
-.flash-attention-page .toc-link:hover {
-  background: var(--paper-subtle);
-  color: var(--ink-strong);
-}
-.flash-attention-page .toc-link.is-active {
-  color: var(--blue);
-  font-weight: 600;
-  background: var(--blue-ghost);
-  border-left-color: var(--blue);
-}
-.flash-attention-page .toc-link.is-active i {
-  color: var(--blue);
-  opacity: 1;
-}
-.flash-attention-page .toc-foot {
-  display: block;
-  padding: 9px 12px 9px 14px;
-  border-top: 1px solid var(--line);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--ink);
-  text-decoration: none;
-}
-.flash-attention-page .toc-foot:hover {
-  color: var(--blue);
-}
-.flash-attention-page .toc.is-closed {
-  width: 46px;
-}
-.flash-attention-page .toc.is-closed .toc-head {
-  flex-direction: column-reverse;
-  gap: 10px;
-  padding: 10px;
-  border-bottom: 0;
-}
-.flash-attention-page .toc.is-closed .toc-head b {
-  writing-mode: vertical-rl;
-  letter-spacing: 0.3em;
-  font-size: 10px;
-}
-.flash-attention-page .toc.is-closed .toc-link,
-.flash-attention-page .toc.is-closed .toc-foot {
-  display: none;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (min-width: 1360px) {
-  .flash-attention-page.toc-open .site-header {
-    padding-left: max(292px, calc((100vw - 1360px) / 2));
-  }
-  .flash-attention-page.toc-open .hero {
-    padding-left: max(292px, calc((100vw - 1360px) / 2));
-  }
-  .flash-attention-page.toc-open .concept-section {
-    padding-left: max(292px, calc((100vw - 1360px) / 2));
-  }
-  .flash-attention-page.toc-open .site-footer {
-    padding-left: max(292px, calc((100vw - 1360px) / 2));
-  }
+  
+  
+  
+  
 }
-.flash-attention-page #tocFab {
-  display: none;
-  position: fixed;
-  z-index: 59;
-  right: 16px;
-  bottom: 16px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--ink-strong);
-  color: var(--paper);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  box-shadow: 0 8px 24px oklch(30% 0.015 260 / 0.25);
-}
+
 @media (max-width: 1359px) {
-  .flash-attention-page .toc {
-    display: none;
-    top: 72px;
-    left: 12px;
-    width: min(300px, calc(100vw - 24px));
-    max-height: calc(100vh - 150px);
-    overflow-y: auto;
-  }
-  .flash-attention-page .toc.is-open {
-    display: block;
-  }
-  .flash-attention-page #tocFab {
-    display: block;
-  }
+  
+  
+  
 }
 .flash-attention-page .header-meta {
   font-family: var(--mono);
