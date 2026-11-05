@@ -1,0 +1,788 @@
+<aside aria-label="页面文档目录" class="doc-outline" id="docOutline">
+  <button
+    aria-controls="docTree"
+    aria-expanded="false"
+    class="doc-toggle"
+    id="docToggle"
+    type="button"
+  >
+    <span aria-hidden="true" class="doc-toggle-icon"
+      ><i></i><i></i><i></i
+    ></span>
+    <span class="doc-toggle-text"
+      ><span class="doc-label-full">文档目录</span
+      ><span aria-hidden="true" class="doc-label-collapsed">目录</span></span
+    >
+    <span aria-hidden="true" class="doc-chevron">＋</span>
+  </button>
+  <nav aria-label="FlashAttention 章节" class="doc-tree" id="docTree">
+    <div class="doc-group">
+      <h2>01 / 对照与访存</h2>
+      <a class="active" href="#sec-duel">标准与 Flash 对照实验</a>
+      <a href="#sec-bottleneck">注意力访存瓶颈</a>
+      <a href="#sec-hierarchy">GPU 内存层次</a>
+    </div>
+    <div class="doc-group">
+      <h2>02 / 分块与在线计算</h2>
+      <a href="#sec-tiling">Tiling 分块回放</a>
+      <a href="#sec-softmax">Online Softmax</a>
+    </div>
+    <div class="doc-group">
+      <h2>03 / 反向与实测</h2>
+      <a href="#sec-recompute">反向传播重计算</a>
+      <a href="#sec-bench">三代内核实测数据</a>
+    </div>
+  </nav>
+</aside>
+<main>
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="top">
+    <div>
+      <span class="hero-kicker"
+        >IO-AWARE EXACT ATTENTION · 写给已经看懂 KV CACHE 的你</span
+      >
+      <h1>FlashAttention：<br />注意力矩阵，<em>不必落地</em></h1>
+      <p class="hero-sub">
+        你已经知道，KV Cache 把历史 K／V
+        留在显存里，用空间换时间。但注意力还有另一半代价：<b
+          >每个 token 的 Q 都要和历史 K 算出一个 N×N 的分数矩阵</b
+        >。朴素实现会把它整块写进 HBM、读回来做
+        softmax、再写回去——FlashAttention 的全部思想，就是让这张矩阵<b
+          >从不离开片上 SRAM</b
+        >。数学不变，字节的路变了。
+      </p>
+      <div class="hero-stats">
+        <span><b>5.7×</b> 更快 · GPT-2 medium 前向+反向</span>
+        <span><b>9×</b> 更少 HBM 读写</span>
+        <span><b>0 B</b> N×N 中间矩阵落盘</span>
+        <span><b>O(N)</b> 显存复杂度</span>
+      </div>
+    </div>
+    <figure class="hero-fig">
+      <svg
+        aria-label="分块注意力示意：Q 块依次扫过 K/V 块，中间矩阵只存在于 SRAM 中"
+        id="heroSvg"
+        role="img"
+        viewbox="0 0 520 300"
+      >
+        <defs>
+          <marker
+            id="arr"
+            markerheight="7"
+            markerwidth="7"
+            orient="auto-start-reverse"
+            refx="7"
+            refy="4"
+            viewbox="0 0 8 8"
+          >
+            <path d="M0,0 L8,4 L0,8 z" fill="oklch(80% .08 260)"></path>
+          </marker>
+        </defs>
+        <!-- Q blocks -->
+        <text
+          fill="oklch(88% .06 260)"
+          font-family="IBM Plex Mono,monospace"
+          font-size="10"
+          letter-spacing="1"
+          x="18"
+          y="26"
+        >
+          Q · 4 块
+        </text>
+        <g id="heroQ"></g>
+        <!-- K/V blocks -->
+        <text
+          fill="oklch(88% .06 260)"
+          font-family="IBM Plex Mono,monospace"
+          font-size="10"
+          letter-spacing="1"
+          x="200"
+          y="26"
+        >
+          K / V · 4 块
+        </text>
+        <g id="heroKV"></g>
+        <!-- SRAM -->
+        <rect
+          fill="none"
+          height="120"
+          stroke="oklch(80% .08 260)"
+          stroke-dasharray="5 4"
+          width="150"
+          x="196"
+          y="120"
+        ></rect>
+        <text
+          fill="oklch(84% .07 260)"
+          font-family="IBM Plex Mono,monospace"
+          font-size="9"
+          letter-spacing="1.5"
+          text-anchor="middle"
+          x="271"
+          y="140"
+        >
+          SRAM · 片上
+        </text>
+        <g id="heroTile"></g>
+        <text
+          fill="oklch(85% .05 260)"
+          font-family="IBM Plex Mono,monospace"
+          font-size="10"
+          id="heroEq"
+          text-anchor="middle"
+          x="271"
+          y="228"
+        >
+          S₂₃ + softmax →
+        </text>
+        <!-- O -->
+        <text
+          fill="oklch(88% .06 260)"
+          font-family="IBM Plex Mono,monospace"
+          font-size="10"
+          letter-spacing="1"
+          x="420"
+          y="26"
+        >
+          O · 输出
+        </text>
+        <g id="heroO"></g>
+        <line
+          marker-end="url(#arr)"
+          stroke="oklch(80% .08 260)"
+          stroke-width="1.2"
+          x1="346"
+          x2="404"
+          y1="180"
+          y2="180"
+        ></line>
+        <text
+          fill="oklch(85% .05 260)"
+          font-family="IBM Plex Mono,monospace"
+          font-size="10"
+          id="heroCounter"
+          x="18"
+          y="276"
+        >
+          HBM 上的 N×N 矩阵：0 B
+        </text>
+      </svg>
+      <figcaption>FIG.0 — 分块扫描循环 · 中间矩阵只活在 SRAM</figcaption>
+    </figure>
+  </section>
+  <!-- ================= ① 逐步对照 ================= -->
+  <section class="concept-section doc-target" id="sec-duel">
+    <div class="section-heading">
+      <div>
+        <span class="kicker">① HEAD-TO-HEAD / 同一个例子，两条路并排跑</span>
+        <h2>4 个 token、16 个分数：一边三进三出 HBM，一边零落盘</h2>
+      </div>
+      <span class="section-note"
+        >N = 4 · d = 2 · 块 = 2 · FP16 · 确定性数值</span
+      >
+    </div>
+    <div class="copy" style="max-width: 84ch; margin-bottom: 22px">
+      <p>
+        同一个固定的小例子（Q、K、V
+        数值全程可手算复现），两条路上下并排执行。<strong>上：标准注意力</strong>——S、P
+        两张 4×4 矩阵各自写回 HBM
+        再读回；<strong>下：FlashAttention</strong>——分块进 SRAM，用 m／ℓ／O
+        三个流动变量在线合并。两条车道各有独立的步骤控制，可以按不同节奏对照推进；盯住底部的字节计数器：<strong
+          >两边算出的 O 逐位相同，HBM 流量却差一倍</strong
+        >——而这只是 N=4 的教学尺寸，差距随 N² 拉大。
+      </p>
+    </div>
+    <div class="tool">
+      <div class="tool-head">
+        <b>TOOL 01 · 逐步对照实验</b
+        ><span>FULL ATTENTION · 两条车道各自独立推进</span>
+      </div>
+      <div class="duel">
+        <div class="lane" id="lane-naive"></div>
+        <div class="lane" id="lane-flash"></div>
+      </div>
+      <div class="cmp-strip" id="duel-cmp"></div>
+    </div>
+  </section>
+  <!-- ================= ② 瓶颈 ================= -->
+  <section class="concept-section doc-target" id="sec-bottleneck">
+    <div class="section-heading">
+      <div>
+        <span class="kicker">② THE BOTTLENECK / 瓶颈在带宽，不在算力</span>
+        <h2>同一张 N×N 矩阵，要在 HBM 里走三个来回</h2>
+      </div>
+      <span class="section-note">单位：FP16 = 2 B / 元素</span>
+    </div>
+    <div class="g2">
+      <div class="copy">
+        <div class="recall">
+          <b>前情回顾 · 你在 KV Cache 一篇里已经知道</b>解码时每个新 token 的 Q
+          都会去读全部历史
+          K／V。那一篇关注「读显存里的缓存」；这一篇关注另一个更隐蔽的成本——<strong
+            >QKᵀ 产生的那张 N×N 分数矩阵本身</strong
+          >。
+        </div>
+        <p>
+          标准实现把注意力拆成一串独立的算子：先算
+          <strong>S = QKᵀ/√d</strong> 并写回 HBM，再读回 S 做 softmax 得到
+          <strong>P</strong> 并写回，最后读回 P 与 V 相乘。S 和 P 各是 N×N——序列
+          4096 时，单张就是
+          <strong>32 MiB</strong>，还要写一遍、读一遍、再写一遍、再读一遍。
+        </p>
+        <p>
+          关键在于<em>算术强度</em>：注意力的 FLOPs 是 4N²d，而 HBM 读写是
+          8N²＋8Nd 字节——比值大约 <strong>d/2 ≈ 32 FLOP/B</strong>（d=64）。A100
+          的 FP16 峰值 312 TFLOP/s 对 HBM 带宽 1.6 TB/s，盈亏平衡点约
+          <strong>195 FLOP/B</strong>。32 ≪
+          195：<strong>算力在等数据，注意力是内存受限（memory-bound）的</strong>。这也解释了为什么大
+          GEMM 能跑满 80–90% 峰值，朴素注意力往往只有 30–40%。
+        </p>
+        <p class="fine">
+          FlashAttention 论文把这条账记成定理：标准注意力的 HBM 访问量是 Θ(Nd +
+          N²)，而它做到 Θ(N²d²/M)（M 为 SRAM 容量）——d=64、M≈100 KB
+          时，分母带来约 25 倍的量级差。
+        </p>
+        <div class="formula">
+          softmax(S)·V，其中 S = QKᵀ/√d ∈ R<sup>N×N</sup> HBM
+          字节数（标准实现，前向，FP16）= <i>读 Q,K</i> 4Nd ＋
+          <u>S 写＋读</u> 4N² ＋ <u>P 写＋读</u> 4N² ＋ <s>读 V、写 O</s> 4Nd =
+          8N² ＋ 8Nd
+          <small>→ 序列翻倍，流量翻两番；而 Q/K/V/O 本身只占 O(Nd)</small>
+        </div>
+      </div>
+      <div class="tool">
+        <div class="tool-head">
+          <b>TOOL 02 · 访存分析器</b><span>标准实现 · 前向 · 单头单层</span>
+        </div>
+        <div class="tool-body">
+          <div class="controls-row">
+            <label class="ctl">
+              <span>序列长度 N<output id="t1-n-out">4096</output></span>
+              <input
+                aria-label="序列长度（2 的幂）"
+                id="t1-n"
+                max="15"
+                min="9"
+                step="1"
+                type="range"
+                value="12"
+              />
+            </label>
+            <div class="ctl" style="max-width: 220px">
+              <span>头维度 d</span>
+              <div class="seg" id="t1-d">
+                <button class="is-on" data-d="64" type="button">64</button>
+                <button data-d="128" type="button">128</button>
+              </div>
+            </div>
+          </div>
+          <div class="result-block">
+            <svg
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewbox="0 0 24 24"
+            >
+              <path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"></path>
+            </svg>
+            <span>标准实现的 HBM 读写总量（前向）</span>
+            <strong id="t1-bytes">537 MiB</strong>
+            <small id="t1-detail">S、P 两张 N×N 矩阵贡献 99.0%</small>
+          </div>
+          <div class="flowbars" id="t1-bars"></div>
+          <div class="stat-grid">
+            <div class="stat-cell">
+              <span>计算量</span><b id="t1-flops">4.3 GFLOP</b
+              ><small>4N²d · 两个大 GEMM</small>
+            </div>
+            <div class="stat-cell">
+              <span>算术强度</span><b class="orange" id="t1-ai">31.6</b
+              ><small>FLOP / byte</small>
+            </div>
+            <div class="stat-cell">
+              <span>A100 盈亏平衡点</span><b id="t1-ridge">195</b
+              ><small>312 TFLOP/s ÷ 1.6 TB/s</small>
+            </div>
+            <div class="stat-cell">
+              <span>判定</span><b class="blue" id="t1-verdict">内存受限</b
+              ><small id="t1-verdict-sub">算力空转 ≈84%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= ② 内存层次 ================= -->
+  <section class="concept-section doc-target" id="sec-hierarchy">
+    <div class="section-heading">
+      <div>
+        <span class="kicker">③ MEMORY HIERARCHY / 快的小，慢的大</span>
+        <h2>SRAM 快一个数量级，但每张显卡只有约 20 MB</h2>
+      </div>
+      <span class="section-note">A100-40GB · Ampere</span>
+    </div>
+    <div class="g2">
+      <div class="copy">
+        <p>
+          GPU 不是一块均匀的记忆体。A100 有 108 个流式多处理器（SM），每个 SM
+          自带 <strong>192 KB 片上 SRAM</strong>，全卡合计约 20 MB、聚合带宽约
+          <strong>19 TB/s</strong>；而显存 HBM 有 40–80 GB，带宽只有
+          <strong>1.5–2.0 TB/s</strong>。容量差 3 个数量级，带宽差 1
+          个数量级——这就是全部优化空间的来源。
+        </p>
+        <p>
+          朴素注意力的每一步（QKᵀ、softmax、P·V）都把中间结果从 HBM
+          搬进搬出，等于一直在走慢车道。FlashAttention 的应对：既然整张 N×N
+          放不下，就<strong>把它切成能塞进 192 KB 的小块</strong>，每块在 SRAM
+          里算完就扔，永远不落盘。
+        </p>
+        <p class="fine">
+          点击下方层级查看参数；右侧拖动序列长度，看 N×N
+          矩阵比片上容量大出多少倍——差距越大，分块的收益越大。
+        </p>
+        <div class="formula">
+          A100：SRAM 192 KB/SM × 108 SM ≈ 20 MB @ ~19 TB/s HBM 40–80 GB @
+          1.5–2.0 TB/s H100：SRAM 228 KB/SM × 132 SM ≈ 30 MB · HBM3 80 GB @ 3.35
+          TB/s <small>容量与带宽的剪刀差，每一代都在拉大</small>
+        </div>
+      </div>
+      <div class="tool">
+        <div class="tool-head">
+          <b>TOOL 03 · 层次与容量</b><span>点击层级 · 拖动序列长度</span>
+        </div>
+        <div class="tool-body">
+          <div class="diagram">
+            <svg
+              aria-label="GPU 内存层次：寄存器、SRAM、L2、HBM 与 N×N 矩阵体积对比"
+              id="hierSvg"
+              role="img"
+              viewbox="0 0 640 240"
+            ></svg>
+            <div class="fig-cap">
+              <span>FIG.1 — A100 内存层次（对数刻度）</span
+              ><span id="hier-hover">点击任一层级</span>
+            </div>
+          </div>
+          <div class="controls-row" style="margin-top: 16px">
+            <label class="ctl">
+              <span>序列长度 N<output id="t2-n-out">8192</output></span>
+              <input
+                aria-label="序列长度（2 的幂）"
+                id="t2-n"
+                max="16"
+                min="8"
+                step="1"
+                type="range"
+                value="13"
+              />
+            </label>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-cell">
+              <span>N×N 矩阵（FP16）</span
+              ><b class="orange" id="t2-mat">128 MiB</b><small>2N² 字节</small>
+            </div>
+            <div class="stat-cell">
+              <span>单 SM SRAM</span><b>192 KB</b
+              ><small id="t2-sm">超出 683×</small>
+            </div>
+            <div class="stat-cell">
+              <span>全卡片上 SRAM</span><b>20.25 MB</b
+              ><small id="t2-all">超出 6.3×</small>
+            </div>
+            <div class="stat-cell">
+              <span>结论</span><b class="blue" id="t2-verdict">必须分块</b
+              ><small>整块放不下 → 切块驻留</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= ③ 分块 ================= -->
+  <section class="concept-section doc-target" id="sec-tiling">
+    <div class="section-heading">
+      <div>
+        <span class="kicker">④ TILING / 一个融合算子，跑完整个注意力</span>
+        <h2>把 Q、K、V 切成块，让每张 S 小方块只活在 SRAM 里</h2>
+      </div>
+      <span class="section-note">演示：N = 16 · 块 = 4 · d = 4</span>
+    </div>
+    <div class="g2">
+      <div class="copy">
+        <p>
+          FlashAttention 外层循环遍历 <strong>Q 的行块</strong>，内层循环扫过
+          <strong>K／V 的列块</strong>：每一步把一对小块从 HBM 读进
+          SRAM，在里面完成 S<sub>ij</sub> = Q<sub>i</sub>K<sub>j</sub>ᵀ、局部
+          softmax、乘上 V<sub>j</sub>，<strong
+            >累加进输出块 O<sub>i</sub></strong
+          >，然后把 S<sub>ij</sub> 直接丢弃——它从未在 HBM 里存在过。
+        </p>
+        <p>
+          整个过程是<strong>一次 kernel 调用</strong
+          >，而不是一串算子。打开因果掩码试试：下三角之外的块对根本不会被加载，这就是为什么因果注意力还能再省约一半流量。
+        </p>
+        <p class="fine">
+          按下播放，盯住两个计数器：「N×N 写入 HBM」恒为
+          0；总流量按块累计——读放大是存在的（每个 Q 块要把 K／V
+          重读一遍），这正是 IO 复杂度里那个 N²d²/M 的来源。
+        </p>
+        <div class="formula">
+          for i in 1..⌈N/B<sub>r</sub>⌉: <small>外层：每次一个 Q 块</small> for
+          j in 1..⌈N/B<sub>c</sub>⌉: <small>内层：扫过全部 K/V 块</small> S<sub
+            >ij</sub
+          >
+          = Q<sub>i</sub>K<sub>j</sub>ᵀ/√d <i>← 在 SRAM 中</i> O<sub>i</sub> ←
+          O<sub>i</sub> + softmax(S<sub>ij</sub>)·V<sub>j</sub>
+          <i>← 边算边并（见 ⑤）</i>
+          <small
+            >块大小取 B<sub>c</sub> = ⌈M/4d⌉，B<sub>r</sub> = min(⌈M/4d⌉,
+            d)，保证三块同驻 SRAM</small
+          >
+        </div>
+      </div>
+      <div class="tool">
+        <div class="tool-head">
+          <b>TOOL 04 · 分块回放</b><span id="t3-mode">FULL · 16 步</span>
+        </div>
+        <div class="diagram">
+          <svg
+            aria-label="分块注意力回放：Q 块逐块扫描 K/V 块，中间结果在 SRAM 中累积"
+            id="tileSvg"
+            role="img"
+            viewbox="0 0 680 460"
+          ></svg>
+          <div class="legend-row">
+            <span
+              ><i
+                style="
+                  background: oklch(90% 0.07 260);
+                  border: 1px solid var(--blue);
+                "
+              ></i
+              >Q 块</span
+            >
+            <span
+              ><i
+                style="
+                  background: oklch(90% 0.06 55);
+                  border: 1px solid var(--orange);
+                "
+              ></i
+              >K 块</span
+            >
+            <span
+              ><i
+                style="
+                  background: oklch(91% 0.045 195);
+                  border: 1px solid var(--teal);
+                "
+              ></i
+              >V 块</span
+            >
+            <span
+              ><i
+                style="
+                  background: oklch(92% 0.05 305);
+                  border: 1px solid var(--purple);
+                "
+              ></i
+              >S<sub>ij</sub> · SRAM 内</span
+            >
+            <span
+              ><i
+                style="
+                  background: oklch(88% 0.07 260);
+                  border: 1px solid var(--blue);
+                "
+              ></i
+              >O 块 · 已写回</span
+            >
+          </div>
+          <div class="replay-bar">
+            <button class="btn primary" id="t3-play" type="button">
+              ▶ 播放
+            </button>
+            <button class="btn" id="t3-step" type="button">步进</button>
+            <button class="btn" id="t3-reset" type="button">重置</button>
+            <div aria-label="因果掩码" class="seg" role="group">
+              <button class="is-on" id="t3-full" type="button">全量</button>
+              <button id="t3-causal" type="button">因果掩码</button>
+            </div>
+            <progress id="t3-prog" max="16" value="0"></progress>
+            <output id="t3-count">0 / 16</output>
+          </div>
+        </div>
+        <div class="tool-body" style="padding-top: 14px">
+          <div class="stat-grid">
+            <div class="stat-cell">
+              <span>N×N 中间矩阵写入 HBM</span
+              ><b class="blue" id="t3-spill">0 B</b
+              ><small>标准实现此时已写 512 B</small>
+            </div>
+            <div class="stat-cell">
+              <span>HBM 读取累计（本回放）</span><b id="t3-read">0 B</b
+              ><small id="t3-read-sub">Q / K / V 块</small>
+            </div>
+            <div class="stat-cell">
+              <span>HBM 写回（O）</span><b id="t3-write">0 B</b
+              ><small>每个 Q 块收尾一次</small>
+            </div>
+            <div class="stat-cell">
+              <span>对照：标准实现总流量</span
+              ><b class="orange" id="t3-std">2.5 KB</b
+              ><small>8N²＋8Nd · 同等规模</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= ④ ONLINE SOFTMAX ================= -->
+  <section class="concept-section doc-target" id="sec-softmax">
+    <div class="section-heading">
+      <div>
+        <span class="kicker"
+          >⑤ ONLINE SOFTMAX / 不看见整行，也能算出精确的 softmax</span
+        >
+        <h2>维护三个流动变量：m、ℓ、O，新块来了就 rescale</h2>
+      </div>
+      <span class="section-note">确定性数值 · 本地实时计算</span>
+    </div>
+    <div class="g2">
+      <div class="copy">
+        <p>
+          分块带来一个数学难题：softmax
+          需要整行的最大值（数值稳定）和整行的指数和，但此刻 SRAM
+          里只有一块。解法是 2018 年就有的
+          <strong>online softmax</strong>（Milakov &amp;
+          Gimelshein）：边扫边维护三个量——目前见过的最大值
+          <strong>m</strong>、以 m 为基准的指数和
+          <strong>ℓ</strong>、未归一的输出累加器 <strong>O</strong>。
+        </p>
+        <p>
+          新块到来时，若它的局部最大值 m<sub>j</sub> 超过了
+          m，就把历史结果整体乘上修正因子
+          <strong
+            >e<sup>m−m<sub>新</sub></sup></strong
+          >
+          再并入。这是精确的代数恒等变换，不是近似——最终结果与一次性 softmax
+          之差只有浮点舍入。
+        </p>
+        <p class="fine">
+          右侧是一个 8 个 key、分 2 块的真实数值演示。步进观察第二块里的 3.20
+          如何触发一次全局 rescale（α = e<sup>2.10−3.20</sup> ≈
+          0.333），而最终结果与直接计算<strong>逐位一致</strong>。
+        </p>
+        <div class="formula">
+          m<sub>新</sub> = max(m, max(S<sub>ij</sub>))
+          <small>行最大值 · 每行一个</small> ℓ ← ℓ·<i
+            >e<sup>m−m<sub>新</sub></sup></i
+          >
+          + Σ exp(S<sub>ij</sub> − m<sub>新</sub>)
+          <small>指数和 · 历史先打折</small> O ← O·<i
+            >e<sup>m−m<sub>新</sub></sup></i
+          >
+          + exp(S<sub>ij</sub> − m<sub>新</sub>)·V<sub>j</sub>
+          <small>输出累加器 · 同样打折再并入</small> 收尾：O ← O/ℓ，并记下 L = m
+          + ln ℓ（留给反向，见 ⑥）
+        </div>
+      </div>
+      <div class="tool">
+        <div class="tool-head">
+          <b>TOOL 05 · ONLINE SOFTMAX 数值演示</b
+          ><span id="t4-step-lbl">第 0 步 · 初始</span>
+        </div>
+        <div class="tool-body">
+          <div class="varcards">
+            <div class="varcard" id="t4-vm">
+              <span>m · 流动最大值</span><b id="t4-m">−∞</b
+              ><small id="t4-m-sub">等待第一个块</small>
+            </div>
+            <div class="varcard" id="t4-vl">
+              <span>ℓ · 流动指数和</span><b id="t4-l">0</b
+              ><small id="t4-l-sub">以 m 为基准</small>
+            </div>
+            <div class="varcard" id="t4-vo">
+              <span>O · 未归一输出 (d=2)</span><b id="t4-o">[0, 0]</b
+              ><small id="t4-o-sub">最后除以 ℓ</small>
+            </div>
+          </div>
+          <div style="overflow-x: auto">
+            <table
+              aria-label="逐 key 的 logits 与指数值"
+              class="numtab"
+              id="t4-tab"
+            >
+              <thead>
+                <tr>
+                  <th style="text-align: left">key</th>
+                  <th>logit x</th>
+                  <th>exp(x − m<sub>当前</sub>)</th>
+                  <th>概率贡献</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div
+            class="replay-bar"
+            style="border: 1px solid var(--line); margin-top: 14px"
+          >
+            <button class="btn primary" id="t4-next" type="button">
+              下一步
+            </button>
+            <button class="btn" id="t4-reset" type="button">重置</button>
+            <progress id="t4-prog" max="3" value="0"></progress>
+            <output id="t4-msg">初始：m = −∞，ℓ = 0，O = 0</output>
+          </div>
+          <div class="stat-grid" style="grid-template-columns: 1fr 1fr">
+            <div class="stat-cell">
+              <span>直接计算（对照）</span><b id="t4-exact">—</b
+              ><small>softmax(整行)·V</small>
+            </div>
+            <div class="stat-cell">
+              <span>在线计算（分 2 块）</span
+              ><b class="blue" id="t4-online">—</b
+              ><small id="t4-diff">差值 —</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= ⑤ 重计算 ================= -->
+  <section class="concept-section doc-target" id="sec-recompute">
+    <div class="section-heading">
+      <div>
+        <span class="kicker"
+          >⑥ RECOMPUTATION / 反向传播：重算一遍，比存下来更快</span
+        >
+        <h2>前向只留 O 和每行一个 L，反向在 SRAM 里重建 S 与 P</h2>
+      </div>
+      <span class="section-note">训练 · 前向 + 反向</span>
+    </div>
+    <div class="g2">
+      <div class="copy">
+        <p>
+          训练需要反向传播，而反向需要用到 S 和
+          P。常规选择是把它们存下来——序列一长，显存立刻爆炸（这正是「FlashAttention
+          之前，长序列训练先 OOM」的原因）。FlashAttention
+          的选择近乎反常：<strong
+            >什么都不存，反向时按同样的分块方式把 S、P 重算一遍</strong
+          >。
+        </p>
+        <p>
+          前向只需额外保存每行一个数 L = m + ln ℓ（logsumexp），反向时
+          Q、K、V、O、dO 分块读入，借助 L 就地重建 P<sub>ij</sub> = exp(S<sub
+            >ij</sub
+          >
+          − L)，算出梯度即弃。FLOPs 因此上升约
+          13%——但墙钟时间反而快得多：<strong>内存受限的世界里，多算比多存便宜</strong>。这也正是你在
+          KV Cache 里见过的那条 trade-off
+          的镜像：那一次用显存换计算，这一次用计算换显存。
+        </p>
+        <div class="formula">
+          前向保存：O [N,d] ＋ L [N]
+          <i>← 显存 O(N·d)，与 N² 无关</i> 反向重建：P<sub>ij</sub> =
+          exp(Q<sub>i</sub>K<sub>j</sub>ᵀ/√d − L)
+          <i>← 在 SRAM 中重算，用完即弃</i>
+          <small
+            >对照：存 S＋P 需要 4N² 字节 / 头 / 层 · N=4096 时约 64 MiB，32 层
+            16 头 ≈ 32 GiB</small
+          >
+        </div>
+      </div>
+      <div class="tool">
+        <div class="tool-head">
+          <b>TOOL 06 · 存 or 重算</b><span>每层 · 每头 · FP16</span>
+        </div>
+        <div class="tool-body">
+          <div class="controls-row">
+            <label class="ctl">
+              <span>序列长度 N<output id="t5-n-out">4096</output></span>
+              <input
+                aria-label="序列长度（2 的幂）"
+                id="t5-n"
+                max="15"
+                min="10"
+                step="1"
+                type="range"
+                value="12"
+              />
+            </label>
+          </div>
+          <div class="flowbars" id="t5-bars"></div>
+          <div class="stat-grid">
+            <div class="stat-cell">
+              <span>策略 A · 存 S＋P</span
+              ><b class="orange" id="t5-store">64 MiB</b
+              ><small>4N² 字节 · 随 N² 膨胀</small>
+            </div>
+            <div class="stat-cell">
+              <span>策略 B · 只存 O＋L</span
+              ><b class="blue" id="t5-recomp">528 KB</b
+              ><small>2Nd＋4N · 随 N 线性</small>
+            </div>
+            <div class="stat-cell">
+              <span>显存削减</span><b id="t5-ratio">124×</b
+              ><small>N 越大，差距越大</small>
+            </div>
+            <div class="stat-cell">
+              <span>代价</span><b>+13% FLOPs</b
+              ><small>实测反而快 5.7×（见 ⑦）</small>
+            </div>
+          </div>
+          <p class="fine" style="margin-top: 12px">
+            反向重算 S、P 用的是同一块 SRAM、同一套分块循环——前向留下的 L 让
+            softmax 可以精确重建，无需任何近似。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= ⑥ 实测数据 ================= -->
+  <section class="concept-section doc-target" id="sec-bench">
+    <div class="section-heading">
+      <div>
+        <span class="kicker">⑦ BENCHMARKS / 论文里的硬数字</span>
+        <h2>从 A100 到 H100：三代内核，同一套 IO 思想</h2>
+      </div>
+      <span class="section-note">悬停查看出处</span>
+    </div>
+    <div class="tool">
+      <div class="tool-head">
+        <b>TOOL 07 · 基准数据面板</b><span>数据来自三代论文原文</span>
+      </div>
+      <div class="tool-body">
+        <div aria-label="基准类别" class="tabs" role="tablist">
+          <button aria-selected="true" data-tab="0" role="tab" type="button">
+            微观基准 · GPT-2 medium
+          </button>
+          <button aria-selected="false" data-tab="1" role="tab" type="button">
+            硬件利用率 · 三代对比
+          </button>
+          <button aria-selected="false" data-tab="2" role="tab" type="button">
+            端到端训练
+          </button>
+        </div>
+        <div class="bars" id="bench-bars"></div>
+        <p class="src-line" id="bench-src"></p>
+      </div>
+    </div>
+    <p class="takeaway" style="margin-top: 48px">
+      一句话记住：FlashAttention
+      没有改注意力的数学，改的是<b>字节的旅程</b>——分块让 N×N 矩阵从不离开
+      SRAM，online softmax
+      让分块结果<em>严丝合缝</em>，重计算让反向也不用存它。剩下的，交给带宽。
+    </p>
+  </section>
+</main>
+<footer class="site-footer">
+  <b>INFERENCE LAB</b>
+  <p>FlashAttention 交互拆解 · 本地确定性数值 · 不读取或上传任何数据</p>
+  <span class="mono"
+    >SOURCES · arXiv:2205.14135 / 2307.08691 / 2407.08608 · MLPerf 1.1</span
+  >
+</footer>
