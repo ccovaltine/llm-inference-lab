@@ -1,3 +1,5 @@
+import { softmax } from "@/lib/numeric";
+
 export const MODEL_CONFIG = {
   layers: 2,
   heads: 2,
@@ -82,13 +84,6 @@ function multiply(a: Matrix, b: Matrix): Matrix {
       return sum;
     }),
   );
-}
-
-function softmax(values: number[]): number[] {
-  const max = Math.max(...values.filter(Number.isFinite));
-  const exps = values.map((value) => (Number.isFinite(value) ? Math.exp(value - max) : 0));
-  const total = exps.reduce((sum, value) => sum + value, 0);
-  return exps.map((value) => value / total);
 }
 
 function rmsNorm(input: Matrix): Matrix {

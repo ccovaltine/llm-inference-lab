@@ -1,3 +1,5 @@
+import { setupDocOutline } from "../lib/setupDocOutline.js";
+
 export function initializeFlashAttentionExplorer(root) {
   const controller = new AbortController();
   const { signal } = controller;
@@ -1835,91 +1837,8 @@ export function initializeFlashAttentionExplorer(root) {
     });
   })();
 
-  const cleanupOutline = (() => {
-    const outline = byId("docOutline");
-    const toggle = byId("docToggle");
-    const links = [...root.querySelectorAll('#docTree a[href^="#"]')];
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    function setOutline(open) {
-      outline.classList.toggle("collapsed", !open);
-      toggle.setAttribute("aria-expanded", String(open));
-      toggle.setAttribute("aria-label", open ? "折叠文档目录" : "展开文档目录");
-      toggle.querySelector(".doc-chevron").textContent = open ? "−" : "＋";
-      root.classList.toggle(
-        "outline-docked",
-        open && window.innerWidth >= 1720
-      );
-    }
-    function setActive(id) {
-      links.forEach(link => {
-        const active = link.getAttribute("href") === "#" + id;
-        link.classList.toggle("active", active);
-        if (active) link.setAttribute("aria-current", "location");
-        else link.removeAttribute("aria-current");
-      });
-    }
-    function goTo(link) {
-      const id = decodeURIComponent(link.getAttribute("href").slice(1));
-      const target = byId(id);
-      if (!target) return;
-      setActive(id);
-      if (window.innerWidth < 1720) setOutline(false);
-      target.scrollIntoView({
-        behavior: reduced.matches ? "auto" : "smooth",
-        block: "start",
-      });
-      if (history.replaceState) history.replaceState(null, "", "#" + id);
-    }
-    links.forEach(link =>
-      link.addEventListener(
-        "click",
-        event => {
-          event.preventDefault();
-          goTo(link);
-        },
-        { signal }
-      )
-    );
-    toggle.addEventListener(
-      "click",
-      () => setOutline(outline.classList.contains("collapsed")),
-      { signal }
-    );
-    let disposed = false;
-    let ticking = false;
-    function updateActive() {
-      if (disposed) return;
-      const y = window.scrollY + 180;
-      let current = links[0].getAttribute("href").slice(1);
-      for (const link of links) {
-        const target = byId(link.getAttribute("href").slice(1));
-        if (target && target.getBoundingClientRect().top + window.scrollY <= y)
-          current = target.id;
-        else break;
-      }
-      setActive(current);
-      ticking = false;
-    }
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(updateActive);
-      }
-    };
-    const onResize = () => {
-      root.classList.toggle(
-        "outline-docked",
-        !outline.classList.contains("collapsed") && window.innerWidth >= 1720
-      );
-    };
-    window.addEventListener("scroll", onScroll, { passive: true, signal });
-    window.addEventListener("resize", onResize, { signal });
-    setOutline(window.innerWidth >= 1720);
-    updateActive();
-    return () => {
-      disposed = true;
-    };
-  })();
+  // 文档目录交互抽到共享模块：FlashAttention 页同步 aria-label 与 aria-current，无初始 hash 深链恢复。
+  const cleanupOutline = setupDocOutline(root, { signal, ariaLabel: true, ariaCurrent: true });
 
   return () => {
     controller.abort();

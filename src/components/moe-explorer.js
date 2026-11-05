@@ -1,8 +1,19 @@
+import { setupDocOutline } from "../lib/setupDocOutline.js";
+
 export function initializeMoEExplorer(root) {
   "use strict";
   const byId = id => root.querySelector("#" + id);
   const controller = new AbortController();
   const signal = controller.signal;
+  // 数值与表格排版工具：原先在下方两个交互区里各有一份重复实现，提升到此处共用。
+  // fmt 两份仅在 NaN 输入的渲染上有差异（有限值完全一致），此处保留前一份的写法。
+  const fmt = x => {
+    const v = Math.abs(x) < 0.0005 ? 0 : x;
+    return (v >= 0 ? "" : "−") + Math.abs(v).toFixed(3);
+  };
+  function table(headers, rows, selected = []) {
+    return `<div class="table-wrap"><table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r, i) => `<tr>${r.map((c, j) => `<td class="${selected.includes(i) && j > 0 ? "selected" : ""}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  }
   const cleanupSingleToken = (() => {
     "use strict";
     const $ = s => root.querySelector(s),
@@ -66,10 +77,6 @@ export function initializeMoEExplorer(root) {
       playing: false,
       timer: null,
     };
-    const fmt = x => {
-      const v = Math.abs(x) < 0.0005 ? 0 : x;
-      return (v >= 0 ? "" : "−") + Math.abs(v).toFixed(3);
-    };
     const vec = v => `[${v.map(fmt).join(", ")}]`;
     function matVec(x, W, b = []) {
       return W[0].map((_, c) =>
@@ -117,9 +124,6 @@ export function initializeMoEExplorer(root) {
         y,
         residual: x.map((v, i) => v + y[i]),
       };
-    }
-    function table(headers, rows, selected = []) {
-      return `<div class="table-wrap"><table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r, i) => `<tr>${r.map((c, j) => `<td class="${selected.includes(i) && j > 0 ? "selected" : ""}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
     }
     function matrix(name, M) {
       return `<div class="matrix-caption">${name}</div>${table(
@@ -485,10 +489,6 @@ export function initializeMoEExplorer(root) {
       expert: 0,
       alpha: 0.01,
     };
-    const fmt = x => {
-      const v = Math.abs(x) < 0.0005 ? 0 : x;
-      return (v < 0 ? "−" : "") + Math.abs(v).toFixed(3);
-    };
     function calc() {
       const T = tokenNames.length,
         E = state.E,
@@ -574,9 +574,6 @@ export function initializeMoEExplorer(root) {
         requested: T * state.k,
         accepted: loads.reduce((a, b) => a + b, 0),
       };
-    }
-    function table(headers, rows, selected = []) {
-      return `<div class="table-wrap"><table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r, i) => `<tr>${r.map((c, j) => `<td class="${selected.includes(i) && j > 0 ? "selected" : ""}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
     }
     function heatmap(c) {
       const T = tokenNames.length,
@@ -1136,98 +1133,8 @@ export function initializeMoEExplorer(root) {
     render();
   })();
 
-  const cleanupOutline = (() => {
-    "use strict";
-    const outline = byId("docOutline"),
-      toggle = byId("docToggle");
-    const links = [...root.querySelectorAll('#docTree a[href^="#"]')];
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    function setOutline(open) {
-      outline.classList.toggle("collapsed", !open);
-      toggle.setAttribute("aria-expanded", String(open));
-      toggle.querySelector(".doc-chevron").textContent = open ? "−" : "＋";
-      root.classList.toggle(
-        "outline-docked",
-        open && window.innerWidth >= 1720
-      );
-    }
-    function setActive(id) {
-      links.forEach(a =>
-        a.classList.toggle("active", a.getAttribute("href") === "#" + id)
-      );
-    }
-    function goTo(link) {
-      const id = decodeURIComponent(link.getAttribute("href").slice(1)),
-        target = byId(id);
-      if (!target) return;
-      setActive(id);
-      if (window.innerWidth < 1720) setOutline(false);
-      target.scrollIntoView({
-        behavior: reduced.matches ? "auto" : "smooth",
-        block: "start",
-      });
-      if (history.replaceState) history.replaceState(null, "", "#" + id);
-    }
-    links.forEach(a =>
-      a.addEventListener(
-        "click",
-        e => {
-          e.preventDefault();
-          goTo(a);
-        },
-        { signal }
-      )
-    );
-    toggle.addEventListener(
-      "click",
-      () => setOutline(outline.classList.contains("collapsed")),
-      { signal }
-    );
-    let disposed = false,
-      ticking = false;
-    function updateActive() {
-      if (disposed) return;
-      const y = window.scrollY + 180;
-      let current = links[0].getAttribute("href").slice(1);
-      for (const a of links) {
-        const target = byId(a.getAttribute("href").slice(1));
-        if (target && target.getBoundingClientRect().top + window.scrollY <= y)
-          current = target.id;
-        else break;
-      }
-      setActive(current);
-      ticking = false;
-    }
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(updateActive);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true, signal });
-    const onResize = () => {
-      root.classList.toggle(
-        "outline-docked",
-        !outline.classList.contains("collapsed") && window.innerWidth >= 1720
-      );
-    };
-    window.addEventListener("resize", onResize, { signal });
-    setOutline(window.innerWidth >= 1720);
-    updateActive();
-    if (location.hash) {
-      const target = byId(decodeURIComponent(location.hash.slice(1)));
-      if (target)
-        requestAnimationFrame(() => {
-          setActive(target.id);
-          target.scrollIntoView({ block: "start" });
-        });
-    }
-    return () => {
-      disposed = true;
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
-  })();
+  // 文档目录交互抽到共享模块：MoE 页带初始 hash 深链恢复，无 aria-label / aria-current 同步。
+  const cleanupOutline = setupDocOutline(root, { signal, hashRestore: true });
   return () => {
     controller.abort();
     cleanupSingleToken();
