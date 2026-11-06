@@ -1,7 +1,7 @@
 import path from "path";
 const __dirname = import.meta.dirname;
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,5 +20,9 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
+  },
+  test: {
+    environment: "node",
+    include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
   },
 });

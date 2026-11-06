@@ -797,3 +797,10 @@ button.transform-arrow-toggle:hover, .transform-arrow-toggle.is-open { backgroun
     width: 13px;
   }
 }
+
+/* ---- 404 页（无壳独立渲染，沿用站点设计令牌）---- */
+.notfound-page { min-height: 100dvh; display: grid; place-items: center; padding: 24px; background: var(--paper); }
+.notfound-card { display: grid; justify-items: center; gap: 10px; width: min(360px, 100%); padding: 40px 28px 32px; text-align: center; background: var(--paper-subtle); border: 1px solid var(--line); border-radius: 10px; }
+.notfound-code { margin: 0; font-size: 56px; font-weight: 700; letter-spacing: 0.04em; line-height: 1; color: var(--blue); }
+.notfound-card h1 { margin: 0; font-size: 17px; font-weight: 600; color: var(--ink); }
+.notfound-card .button { margin-top: 10px; min-width: 200px; }
