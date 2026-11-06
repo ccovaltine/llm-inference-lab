@@ -1,33 +1,18 @@
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 import { ArrowRight, CircleStop, FolderClock, LoaderCircle, LogIn, Sparkles, Trash2 } from "lucide-react";
 import { IS_STATIC_DEMO } from "@/const";
-import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "../../api/router";
+import type { HomeOutletContext } from "@/pages/Home";
 
-type ExperimentItem = inferRouterOutputs<AppRouter>["experiment"]["list"][number];
-
-export default function NotebookView({
-  user,
-  authLoading,
-  isAuthenticated,
-  experiments,
-  onLoadExperiment,
-  onDeleteExperiment,
-  onSwitchView,
-}: {
-  user: { name?: string | null } | null | undefined;
-  authLoading: boolean;
-  isAuthenticated: boolean;
-  experiments: {
-    isLoading: boolean;
-    isError: boolean;
-    refetch: () => void;
-    data?: ExperimentItem[];
-  };
-  onLoadExperiment: (item: { prompt: string; temperature: number; topK: number }) => void;
-  onDeleteExperiment: (id: number) => void;
-  onSwitchView: (view: "lab") => void;
-}) {
+export default function NotebookView() {
+  const {
+    user,
+    authLoading,
+    isAuthenticated,
+    experiments,
+    onLoadExperiment,
+    onDeleteExperiment,
+    onSwitchView,
+  } = useOutletContext<HomeOutletContext>();
   return (
     <main className="subpage notebook-page">
       <header className="view-intro"><span className="stage-kicker">YOUR NOTEBOOK</span><h1>把一次观察，留成可重开的实验</h1><p>{IS_STATIC_DEMO ? "GitHub Pages 仅提供浏览器内的推理演示，不连接账户、数据库或服务端实验记录。" : "保存输入、生成结果与解码参数。记录保存在服务端，刷新或更换设备后仍可访问。"}</p></header>

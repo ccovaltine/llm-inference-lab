@@ -1,33 +1,89 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import {
   BookOpen, Database, FlaskConical, FolderClock, LoaderCircle,
   LogIn, Network, UserRound, Waypoints, Zap,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "../../api/router";
 import "../App.css";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { IS_STATIC_DEMO } from "@/const";
-import LabView from "@/views/LabView";
 import {
   MODEL_CONFIG, forward, getCandidates, tokenize,
-  type Candidate, type Token,
+  type Candidate, type ForwardTrace, type Token,
 } from "@/lib/tinyTransformer";
 
-// 实验台视图随首屏直接打包（lab 永不懒加载）；其余视图按需加载并在空闲时预取。
-const KVCacheReplay = lazy(() => import("@/views/kv/KVCacheReplay"));
-const AttentionNetwork = lazy(() => import("@/views/attention/AttentionNetwork"));
-const FlashAttentionExplorer = lazy(() => import("@/views/flash/FlashAttentionExplorer"));
-const MoEExplorer = lazy(() => import("@/views/moe/MoEExplorer"));
-const Concepts = lazy(() => import("@/views/concepts/Concepts"));
-const NotebookView = lazy(() => import("@/views/NotebookView"));
+type ExperimentItem = inferRouterOutputs<AppRouter>["experiment"]["list"][number];
 
 const EXAMPLES = ["小猫坐在垫子上", "机器人站在沙发旁边", "小狗躺在草地上"];
-type View = "lab" | "kv" | "attention" | "flash" | "moe" | "concepts" | "notebook";
+
+/** 教学页面对应 HomeShell 下的子路由（可深链、可回退），视图名用于导航与激活态判定。 */
+export type HomeView = "lab" | "kv" | "attention" | "flash" | "moe" | "concepts" | "notebook";
+
+const VIEW_PATHS: Record<HomeView, string> = {
+  lab: "/",
+  kv: "/kv",
+  attention: "/attention",
+  flash: "/flash",
+  moe: "/moe",
+  concepts: "/concepts",
+  notebook: "/notebook",
+};
+
+const PATH_VIEWS: Record<string, Exclude<HomeView, "lab">> = {
+  "/kv": "kv",
+  "/attention": "attention",
+  "/flash": "flash",
+  "/moe": "moe",
+  "/concepts": "concepts",
+  "/notebook": "notebook",
+};
+
+function viewFromPath(pathname: string): HomeView {
+  const normalized = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  return PATH_VIEWS[normalized] ?? "lab";
+}
+
+/** 经 <Outlet context> 下发给子路由视图（LabView / NotebookView）的状态与能力。 */
+export type HomeOutletContext = {
+  prompt: string;
+  trace: ForwardTrace;
+  candidates: Candidate[];
+  selectedCandidate: Candidate;
+  generatedCount: number;
+  canGenerate: boolean;
+  temperature: number;
+  topK: number;
+  labRef: RefObject<HTMLElement | null>;
+  examples: string[];
+  draft: string;
+  onDraftChange: (value: string) => void;
+  inputError: string;
+  onRunPrompt: (prompt?: string) => void;
+  onTemperatureChange: (value: number) => void;
+  onTopKChange: (value: number) => void;
+  onSelectCandidate: (candidate: Candidate) => void;
+  onCommitCandidate: (candidate: Candidate) => void;
+  isAuthenticated: boolean;
+  createPending: boolean;
+  onSaveCurrent: () => void;
+  onSwitchView: (view: HomeView) => void;
+  user: { name?: string | null } | null | undefined;
+  authLoading: boolean;
+  experiments: {
+    isLoading: boolean;
+    isError: boolean;
+    refetch: () => void;
+    data?: ExperimentItem[];
+  };
+  onLoadExperiment: (item: { prompt: string; temperature: number; topK: number }) => void;
+  onDeleteExperiment: (id: number) => void;
+};
 
 export default function HomeShell() {
-  const [view, setView] = useState<View>("lab");
   const [draft, setDraft] = useState(EXAMPLES[0]);
   const [prompt, setPrompt] = useState(EXAMPLES[0]);
   const [generated, setGenerated] = useState<Token[]>([]);
@@ -36,6 +92,9 @@ export default function HomeShell() {
   const [selectedCandidateId, setSelectedCandidateId] = useState<number | null>(null);
   const [inputError, setInputError] = useState("");
   const labRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const view = viewFromPath(location.pathname);
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const utils = trpc.useUtils();
   const experiments = trpc.experiment.list.useQuery(undefined, { enabled: isAuthenticated && !IS_STATIC_DEMO });
@@ -63,6 +122,7 @@ export default function HomeShell() {
   const canGenerate = trace.tokens.length < MODEL_CONFIG.maxTokens && trace.tokens.at(-1)?.id !== 1;
 
   useEffect(() => {
+    // 子路由的懒加载分块在 App.tsx 声明，这里只负责空闲时预取（lab 随首屏打包，无需预取）。
     const prefetch = () => {
       void import("@/views/kv/KVCacheReplay");
       void import("@/views/attention/AttentionNetwork");
@@ -109,8 +169,9 @@ export default function HomeShell() {
     setSelectedCandidateId(null);
   }
 
-  function switchView(next: View) {
-    setView(next);
+  function switchView(next: HomeView) {
+    // 声明式导航不会自动滚动，平滑滚回顶部保留在点击处理里；重复点击当前视图不产生历史记录。
+    if (view !== next) navigate(VIEW_PATHS[next]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -131,10 +192,40 @@ export default function HomeShell() {
     setTemperature(item.temperature);
     setTopK(item.topK);
     setGenerated([]);
-    setView("lab");
+    navigate("/");
     toast.success("已恢复输入与解码参数");
     window.setTimeout(() => labRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   }
+
+  const outletContext: HomeOutletContext = {
+    prompt,
+    trace,
+    candidates,
+    selectedCandidate,
+    generatedCount: generated.length,
+    canGenerate,
+    temperature,
+    topK,
+    labRef,
+    examples: EXAMPLES,
+    draft,
+    onDraftChange: setDraft,
+    inputError,
+    onRunPrompt: runPrompt,
+    onTemperatureChange: setTemperature,
+    onTopKChange: setTopK,
+    onSelectCandidate: (candidate) => setSelectedCandidateId(candidate.id),
+    onCommitCandidate: commitCandidate,
+    isAuthenticated,
+    createPending: createExperiment.isPending,
+    onSaveCurrent: saveCurrent,
+    onSwitchView: switchView,
+    user,
+    authLoading,
+    experiments,
+    onLoadExperiment: loadExperiment,
+    onDeleteExperiment: (id) => deleteExperiment.mutate({ id }),
+  };
 
   return (
     <div className="app-shell">
@@ -162,54 +253,7 @@ export default function HomeShell() {
         </div>
       </header>
 
-      {view === "lab" && (
-        <LabView
-          prompt={prompt}
-          trace={trace}
-          candidates={candidates}
-          selectedCandidate={selectedCandidate}
-          generatedCount={generated.length}
-          canGenerate={canGenerate}
-          temperature={temperature}
-          topK={topK}
-          labRef={labRef}
-          examples={EXAMPLES}
-          draft={draft}
-          onDraftChange={setDraft}
-          inputError={inputError}
-          onRunPrompt={runPrompt}
-          onTemperatureChange={setTemperature}
-          onTopKChange={setTopK}
-          onSelectCandidate={(candidate) => setSelectedCandidateId(candidate.id)}
-          onCommitCandidate={commitCandidate}
-          isAuthenticated={isAuthenticated}
-          createPending={createExperiment.isPending}
-          onSaveCurrent={saveCurrent}
-          onSwitchView={switchView}
-        />
-      )}
-
-      {view === "kv" && <Suspense fallback={null}><KVCacheReplay /></Suspense>}
-
-      {view === "attention" && <Suspense fallback={null}><AttentionNetwork /></Suspense>}
-
-      {view === "flash" && <Suspense fallback={null}><FlashAttentionExplorer /></Suspense>}
-
-      {view === "moe" && <Suspense fallback={null}><MoEExplorer /></Suspense>}
-
-      {view === "concepts" && <main className="subpage"><Suspense fallback={null}><Concepts /></Suspense></main>}
-
-      {view === "notebook" && (
-        <Suspense fallback={null}><NotebookView
-          user={user}
-          authLoading={authLoading}
-          isAuthenticated={isAuthenticated}
-          experiments={experiments}
-          onLoadExperiment={loadExperiment}
-          onDeleteExperiment={(id) => deleteExperiment.mutate({ id })}
-          onSwitchView={switchView}
-        /></Suspense>
-      )}
+      <Outlet context={outletContext} />
     </div>
   );
 }

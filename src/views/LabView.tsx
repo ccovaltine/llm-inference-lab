@@ -1,57 +1,36 @@
-import type { RefObject } from "react";
+import { useOutletContext } from "react-router";
 import { ArrowRight, LoaderCircle, Play, Save } from "lucide-react";
 import { IS_STATIC_DEMO } from "@/const";
 import TransformerWorkbench from "@/components/TransformerWorkbench";
 import { ArchitectureStrip } from "@/components/InferenceVisual";
-import { MODEL_CONFIG, type Candidate, type ForwardTrace } from "@/lib/tinyTransformer";
+import { MODEL_CONFIG } from "@/lib/tinyTransformer";
+import type { HomeOutletContext } from "@/pages/Home";
 
-export default function LabView({
-  prompt,
-  trace,
-  candidates,
-  selectedCandidate,
-  generatedCount,
-  canGenerate,
-  temperature,
-  topK,
-  labRef,
-  examples,
-  draft,
-  onDraftChange,
-  inputError,
-  onRunPrompt,
-  onTemperatureChange,
-  onTopKChange,
-  onSelectCandidate,
-  onCommitCandidate,
-  isAuthenticated,
-  createPending,
-  onSaveCurrent,
-  onSwitchView,
-}: {
-  prompt: string;
-  trace: ForwardTrace;
-  candidates: Candidate[];
-  selectedCandidate: Candidate;
-  generatedCount: number;
-  canGenerate: boolean;
-  temperature: number;
-  topK: number;
-  labRef: RefObject<HTMLElement | null>;
-  examples: string[];
-  draft: string;
-  onDraftChange: (value: string) => void;
-  inputError: string;
-  onRunPrompt: (prompt?: string) => void;
-  onTemperatureChange: (value: number) => void;
-  onTopKChange: (value: number) => void;
-  onSelectCandidate: (candidate: Candidate) => void;
-  onCommitCandidate: (candidate: Candidate) => void;
-  isAuthenticated: boolean;
-  createPending: boolean;
-  onSaveCurrent: () => void;
-  onSwitchView: (view: "notebook" | "concepts") => void;
-}) {
+export default function LabView() {
+  const {
+    prompt,
+    trace,
+    candidates,
+    selectedCandidate,
+    generatedCount,
+    canGenerate,
+    temperature,
+    topK,
+    labRef,
+    examples,
+    draft,
+    onDraftChange,
+    inputError,
+    onRunPrompt,
+    onTemperatureChange,
+    onTopKChange,
+    onSelectCandidate,
+    onCommitCandidate,
+    isAuthenticated,
+    createPending,
+    onSaveCurrent,
+    onSwitchView,
+  } = useOutletContext<HomeOutletContext>();
   return (
     <main>
       <section className="hero">
