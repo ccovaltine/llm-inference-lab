@@ -1,3 +1,4 @@
+import { softmax as softmaxRow } from "@/lib/numeric";
 import {
   MODEL_CONFIG, VOCAB, getEmbeddingParameters, getLayerParameters, getRmsGains,
   getUnembeddingParameters, type Candidate, type ForwardTrace, type Matrix,
@@ -62,13 +63,6 @@ function tensor(
 
 function seqTensor(name: string, data: Matrix, role: TensorRole, trace: ForwardTrace, options: Partial<OperationTensor> = {}) {
   return tensor(name, data, role, { rowLabels: tokenRows(trace), ...options });
-}
-
-function softmaxRow(values: number[]) {
-  const max = Math.max(...values.filter(Number.isFinite));
-  const exps = values.map((value) => Number.isFinite(value) ? Math.exp(value - max) : 0);
-  const sum = exps.reduce((total, value) => total + value, 0);
-  return exps.map((value) => value / sum);
 }
 
 function meta(index: number): Pick<Operation, "id" | "title" | "short" | "group" | "kind" | "formula" | "code" | "explanation"> {

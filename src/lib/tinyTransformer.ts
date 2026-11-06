@@ -1,3 +1,5 @@
+import { softmax } from "@/lib/numeric";
+
 export const MODEL_CONFIG = {
   layers: 2,
   heads: 2,
@@ -84,13 +86,6 @@ function multiply(a: Matrix, b: Matrix): Matrix {
   );
 }
 
-function softmax(values: number[]): number[] {
-  const max = Math.max(...values.filter(Number.isFinite));
-  const exps = values.map((value) => (Number.isFinite(value) ? Math.exp(value - max) : 0));
-  const total = exps.reduce((sum, value) => sum + value, 0);
-  return exps.map((value) => value / total);
-}
-
 function rmsNorm(input: Matrix): Matrix {
   return input.map((row) => {
     const rms = Math.sqrt(row.reduce((sum, value) => sum + value * value, 0) / row.length + 1e-5);
@@ -133,10 +128,6 @@ const outputBias = VOCAB.map((token) => {
 
 export function getLayerParameters(layer: number) {
   return weights[layer];
-}
-
-export function getOutputParameters(tokenId: number) {
-  return { weights: unembedding[tokenId], bias: outputBias[tokenId] };
 }
 
 export function getEmbeddingParameters() {
@@ -287,6 +278,3 @@ export function tokensToText(tokens: Token[]) {
     .join(" ");
 }
 
-export function vectorNorm(vector: number[]) {
-  return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
-}
