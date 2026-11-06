@@ -1,6 +1,5 @@
 import { useOutletContext } from "react-router";
-import { ArrowRight, LoaderCircle, Play, Save } from "lucide-react";
-import { IS_STATIC_DEMO } from "@/const";
+import { ArrowRight, Play } from "lucide-react";
 import TransformerWorkbench from "@/components/TransformerWorkbench";
 import { ArchitectureStrip } from "@/components/InferenceVisual";
 import { MODEL_CONFIG } from "@/lib/tinyTransformer";
@@ -26,9 +25,6 @@ export default function LabView() {
     onTopKChange,
     onSelectCandidate,
     onCommitCandidate,
-    isAuthenticated,
-    createPending,
-    onSaveCurrent,
     onSwitchView,
   } = useOutletContext<HomeOutletContext>();
   return (
@@ -62,7 +58,6 @@ export default function LabView() {
           <div className="decode-controls">
             <label><span>Temperature <strong>{temperature.toFixed(1)}</strong></span><input type="range" min="0.1" max="2" step="0.1" value={temperature} onChange={(event) => onTemperatureChange(Number(event.target.value))} /></label>
             <label><span>Top-k <strong>{topK}</strong></span><input type="range" min="1" max="16" step="1" value={topK} onChange={(event) => onTopKChange(Number(event.target.value))} /></label>
-            {!IS_STATIC_DEMO && <button type="button" className="button secondary save-button" onClick={isAuthenticated ? onSaveCurrent : () => onSwitchView("notebook")} disabled={createPending}>{createPending ? <LoaderCircle className="spin" /> : <Save />}{isAuthenticated ? "保存实验" : "登录后保存"}</button>}
           </div>
         </div>
 

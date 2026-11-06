@@ -8,11 +8,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(templateRoot, "src"),
-      "@contracts": path.resolve(templateRoot, "contracts"),
     },
   },
   test: {
     environment: "node",
-    include: ["api/**/*.test.ts", "api/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.spec.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
   },
 });

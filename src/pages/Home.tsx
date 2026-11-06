@@ -1,27 +1,19 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import {
-  BookOpen, Database, FlaskConical, FolderClock, LoaderCircle,
-  LogIn, Network, UserRound, Waypoints, Zap,
+  BookOpen, Database, FlaskConical, Network, Waypoints, Zap,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
-import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "../../api/router";
 import "../App.css";
-import { trpc } from "@/providers/trpc";
-import { useAuth } from "@/hooks/useAuth";
-import { IS_STATIC_DEMO } from "@/const";
 import {
   MODEL_CONFIG, forward, getCandidates, tokenize,
   type Candidate, type ForwardTrace, type Token,
 } from "@/lib/tinyTransformer";
 
-type ExperimentItem = inferRouterOutputs<AppRouter>["experiment"]["list"][number];
-
 const EXAMPLES = ["小猫坐在垫子上", "机器人站在沙发旁边", "小狗躺在草地上"];
 
 /** 教学页面对应 HomeShell 下的子路由（可深链、可回退），视图名用于导航与激活态判定。 */
-export type HomeView = "lab" | "kv" | "attention" | "flash" | "moe" | "concepts" | "notebook";
+export type HomeView = "lab" | "kv" | "attention" | "flash" | "moe" | "concepts";
 
 const VIEW_PATHS: Record<HomeView, string> = {
   lab: "/",
@@ -30,7 +22,6 @@ const VIEW_PATHS: Record<HomeView, string> = {
   flash: "/flash",
   moe: "/moe",
   concepts: "/concepts",
-  notebook: "/notebook",
 };
 
 const PATH_VIEWS: Record<string, Exclude<HomeView, "lab">> = {
@@ -39,7 +30,6 @@ const PATH_VIEWS: Record<string, Exclude<HomeView, "lab">> = {
   "/flash": "flash",
   "/moe": "moe",
   "/concepts": "concepts",
-  "/notebook": "notebook",
 };
 
 function viewFromPath(pathname: string): HomeView {
@@ -47,7 +37,7 @@ function viewFromPath(pathname: string): HomeView {
   return PATH_VIEWS[normalized] ?? "lab";
 }
 
-/** 经 <Outlet context> 下发给子路由视图（LabView / NotebookView）的状态与能力。 */
+/** 经 <Outlet context> 下发给子路由视图（LabView）的状态与能力。 */
 export type HomeOutletContext = {
   prompt: string;
   trace: ForwardTrace;
@@ -67,20 +57,7 @@ export type HomeOutletContext = {
   onTopKChange: (value: number) => void;
   onSelectCandidate: (candidate: Candidate) => void;
   onCommitCandidate: (candidate: Candidate) => void;
-  isAuthenticated: boolean;
-  createPending: boolean;
-  onSaveCurrent: () => void;
   onSwitchView: (view: HomeView) => void;
-  user: { name?: string | null } | null | undefined;
-  authLoading: boolean;
-  experiments: {
-    isLoading: boolean;
-    isError: boolean;
-    refetch: () => void;
-    data?: ExperimentItem[];
-  };
-  onLoadExperiment: (item: { prompt: string; temperature: number; topK: number }) => void;
-  onDeleteExperiment: (id: number) => void;
 };
 
 export default function HomeShell() {
@@ -95,23 +72,6 @@ export default function HomeShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const view = viewFromPath(location.pathname);
-  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
-  const utils = trpc.useUtils();
-  const experiments = trpc.experiment.list.useQuery(undefined, { enabled: isAuthenticated && !IS_STATIC_DEMO });
-  const createExperiment = trpc.experiment.create.useMutation({
-    onSuccess: async () => {
-      await utils.experiment.list.invalidate();
-      toast.success("实验已保存到你的记录");
-    },
-    onError: () => toast.error("保存失败，请稍后重试"),
-  });
-  const deleteExperiment = trpc.experiment.delete.useMutation({
-    onSuccess: async () => {
-      await utils.experiment.list.invalidate();
-      toast.success("记录已删除");
-    },
-    onError: () => toast.error("删除失败，请重试"),
-  });
 
   const trace = useMemo(() => forward([...tokenize(prompt), ...generated]), [prompt, generated]);
   const candidates = useMemo(
@@ -129,7 +89,6 @@ export default function HomeShell() {
       void import("@/views/flash/FlashAttentionExplorer");
       void import("@/views/moe/MoEExplorer");
       void import("@/views/concepts/Concepts");
-      void import("@/views/NotebookView");
     };
     if (typeof window.requestIdleCallback === "function") {
       const handle = window.requestIdleCallback(prefetch);
@@ -175,28 +134,6 @@ export default function HomeShell() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function saveCurrent() {
-    if (!isAuthenticated) return;
-    createExperiment.mutate({
-      title: `推理实验 · ${prompt.slice(0, 14)}`,
-      prompt,
-      output: generated.length ? generated.map((token) => token.id === 1 ? "<EOS>" : token.raw).join(" ") : "尚未生成",
-      temperature,
-      topK,
-    });
-  }
-
-  function loadExperiment(item: { prompt: string; temperature: number; topK: number }) {
-    setPrompt(item.prompt);
-    setDraft(item.prompt);
-    setTemperature(item.temperature);
-    setTopK(item.topK);
-    setGenerated([]);
-    navigate("/");
-    toast.success("已恢复输入与解码参数");
-    window.setTimeout(() => labRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
-  }
-
   const outletContext: HomeOutletContext = {
     prompt,
     trace,
@@ -216,15 +153,7 @@ export default function HomeShell() {
     onTopKChange: setTopK,
     onSelectCandidate: (candidate) => setSelectedCandidateId(candidate.id),
     onCommitCandidate: commitCandidate,
-    isAuthenticated,
-    createPending: createExperiment.isPending,
-    onSaveCurrent: saveCurrent,
     onSwitchView: switchView,
-    user,
-    authLoading,
-    experiments,
-    onLoadExperiment: loadExperiment,
-    onDeleteExperiment: (id) => deleteExperiment.mutate({ id }),
   };
 
   return (
@@ -242,15 +171,7 @@ export default function HomeShell() {
           <button type="button" className={view === "flash" ? "is-active" : ""} onClick={() => switchView("flash")}><Zap />FlashAttention</button>
           <button type="button" className={view === "moe" ? "is-active" : ""} onClick={() => switchView("moe")}><Waypoints />MoE 网络</button>
           <button type="button" className={view === "concepts" ? "is-active" : ""} onClick={() => switchView("concepts")}><BookOpen />概念速查</button>
-          <button type="button" className={view === "notebook" ? "is-active" : ""} onClick={() => switchView("notebook")}><FolderClock />我的实验</button>
         </nav>
-        <div className="account-area">
-          {IS_STATIC_DEMO ? <span className="account-loading"><FlaskConical />静态演示</span> : authLoading ? <span className="account-loading"><LoaderCircle className="spin" />账户检查中</span> : user ? (
-            <button type="button" className="account-button" onClick={logout} title="点击退出登录"><UserRound /><span>{user.name ?? "已登录"}</span><small>退出</small></button>
-          ) : (
-            <Link to="/login" className="account-button"><LogIn /><span>登录保存</span></Link>
-          )}
-        </div>
       </header>
 
       <Outlet context={outletContext} />
