@@ -176,7 +176,6 @@ npm run preview:pages
 │   ├── components/
 │   │   ├── TransformerWorkbench.tsx   # 三列推理工作台
 │   │   ├── InferenceVisual.tsx        # 矩阵、概率与结构可视化原件
-│   │   └── ui/                        # button、card 基础件
 │   └── lib/
 │       ├── tinyTransformer.ts         # 可复现的微型 Transformer
 │       ├── inferenceOperations.ts     # 43 个计算节点与逐元素定义

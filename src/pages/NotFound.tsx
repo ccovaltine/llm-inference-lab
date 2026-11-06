@@ -1,21 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
+import "../App.css";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Card className="w-full max-w-sm text-center">
-        <CardHeader>
-          <CardTitle className="text-4xl font-bold">404</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">Page not found</p>
-          <Button asChild className="w-full">
-            <Link to="/">Back to Home</Link>
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+    <main className="notfound-page">
+      <div className="notfound-card">
+        <p className="notfound-code" aria-hidden="true">404</p>
+        <h1>Page not found</h1>
+        <Link className="button primary" to="/">Back to Home</Link>
+      </div>
+    </main>
   );
 }
